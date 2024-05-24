@@ -4,7 +4,6 @@ from playwright.sync_api import Playwright, sync_playwright, expect
 def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False)
     try: 
-        
         context = browser.new_context(storage_state="..\playwright\.auth\linkedinAuthState.json")
         page = context.new_page()
         page.goto("https://www.linkedin.com/feed/")
@@ -39,6 +38,7 @@ def run(playwright: Playwright) -> None:
     # ---------------------
     context.close()
     browser.close()
+    playwright.stop()
 
 
 with sync_playwright() as playwright:
