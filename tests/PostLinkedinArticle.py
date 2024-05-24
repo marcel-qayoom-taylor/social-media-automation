@@ -1,5 +1,9 @@
 import re
+import os
 from playwright.sync_api import Playwright, sync_playwright, expect
+from dotenv import load_dotenv
+
+load_dotenv()  # Loads variables from the .env file
 
 def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False)
@@ -10,11 +14,17 @@ def run(playwright: Playwright) -> None:
         print("Loaded existing storage state from linkedinAuthState.json")
     except FileNotFoundError:
         print("Could not find existing auth state from linkedinAuthState.json")
+        linkedinUsername = os.getenv("LINKEDIN_USERNAME")
+        linkedinPassword = os.getenv("LINKEDIN_PASSWORD")
+        if not linkedinUsername or not linkedinPassword:
+            print("Error: Missing LinkedIn Credentials! Please ensure both 'linkedinUsername' and 'linkedinPassword' environment variables are set in your '.env' file.")
+            return
+
         context = browser.new_context()
         page = context.new_page()
         page.goto("https://www.linkedin.com/login")
-        page.get_by_label("Email or phone").fill("dion@100doors.co")
-        page.get_by_label("Password", exact=True).fill("Paula$1977")
+        page.get_by_label("Email or phone").fill(linkedinUsername)
+        page.get_by_label("Password", exact=True).fill(linkedinPassword)
         page.get_by_label("Sign in", exact=True).click()
         
         # Save storage state for future use
