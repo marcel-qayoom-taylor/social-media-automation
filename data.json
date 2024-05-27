@@ -1,0 +1,13 @@
+{
+  "article": {
+    "title": "My first article",
+    "body": "This is the body of my first article",
+    "intro": "This is the intro of my first article",
+    "image_path": "/",
+    "tags": ["First", "Article"],
+    "disclaimers": ["This is a disclaimer for my first article"],
+    "linkedin_article_link": "",
+    "linkedin_post_link": "",
+    "facebook_post_link": ""
+  }
+}
