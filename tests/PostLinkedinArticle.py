@@ -1,13 +1,21 @@
+# step-by-step run command: PWDEBUG=1 pytest -s PostLinkedinArticle.py
+
+
 import re
 import os
 import asyncio
 from playwright.sync_api import Playwright, sync_playwright, expect
 from dotenv import load_dotenv
+import json
 
 load_dotenv()  # Loads variables from the .env file
 
+with open('../data.json', 'r') as f:
+    data = json.load(f)
+
 def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False)
+    print("found: ", data)
     try: 
         context = browser.new_context(storage_state="..\playwright\.auth\linkedinAuthState.json")
         
