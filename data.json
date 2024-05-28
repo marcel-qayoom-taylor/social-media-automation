@@ -3,7 +3,7 @@
     "title": "My first article",
     "body": "This is the body of my first article",
     "intro": "This is the intro of my first article",
-    "image_path": "/",
+    "image_path": "slideshow.png",
     "tags": ["First", "Article"],
     "disclaimers": ["This is a disclaimer for my first article"],
     "linkedin_article_link": "",

@@ -10,12 +10,13 @@ import json
 
 load_dotenv()  # Loads variables from the .env file
 
+
+# Read input data
 with open('../data.json', 'r') as f:
     data = json.load(f)
 
 def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False)
-    print("found: ", data)
     try: 
         context = browser.new_context(storage_state="..\playwright\.auth\linkedinAuthState.json")
         
@@ -47,17 +48,17 @@ def run(playwright: Playwright) -> None:
     page.get_by_label("Write an article on LinkedIn").click()
     page.get_by_role("radio", name="Dion Guagliardo").click()
     page.get_by_role("button", name="Next").click()
-    page.get_by_placeholder("Title").press_sequentially("Test Title")    
+    page.get_by_placeholder("Title").press_sequentially(data['article']['title'])    
     
     expect(page).to_have_url(re.compile(".*article/edit/")) # Wait for editor to save (have article/edit in url)
-    page.get_by_label("Article editor content").press_sequentially("Test intro para")
+    page.get_by_label("Article editor content").press_sequentially(data['article']['body'])
 
     # Add image
-    page.get_by_label("Upload from computer").set_input_files("slideshow.png") # image has to be in directory or use file picker but needs async
+    page.get_by_label("Upload from computer").set_input_files(data['article']['image_path']) # image has to be in directory or use file picker but needs async
     
     # Move to publish page
     page.get_by_role("button", name="Next").click(delay=2000) # wait for draft to save
-    page.get_by_label("Text editor for creating").press_sequentially("Test intro para")
+    page.get_by_label("Text editor for creating").press_sequentially(data['article']['intro'])
 
     # ---------------------
     context.close()
