@@ -48,7 +48,7 @@ def run(playwright: Playwright) -> None:
     page.get_by_label("Write an article on LinkedIn").click()
     page.get_by_role("radio", name="Dion Guagliardo").click()
     page.get_by_role("button", name="Next").click()
-    page.get_by_placeholder("Title").press_sequentially(data['article']['title'])    
+    page.get_by_placeholder("Title").press_sequentially(data['article']['title'])
     
     expect(page).to_have_url(re.compile(".*article/edit/")) # Wait for editor to save (have article/edit in url)
     page.get_by_label("Article editor content").press_sequentially(data['article']['body'])
@@ -58,7 +58,13 @@ def run(playwright: Playwright) -> None:
     
     # Move to publish page
     page.get_by_role("button", name="Next").click(delay=2000) # wait for draft to save
-    page.get_by_label("Text editor for creating").press_sequentially(data['article']['intro'])
+    page.get_by_label("Text editor for creating").press_sequentially(data['article']['intro']) # this not working but i need spacing
+    page.get_by_label("Text editor for creating").press_sequentially('\n\n') 
+
+    # Add hashtags
+    for tag in data['article']['tags']:
+        hashtag = '#' + str(tag) + ' '
+        page.get_by_label("Text editor for creating").press_sequentially(hashtag)
 
     # ---------------------
     context.close()
