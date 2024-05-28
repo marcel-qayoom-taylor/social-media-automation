@@ -1,8 +1,22 @@
 from tkinter import *
+from tkinter import Label
+from tkinter import filedialog
 
 # Fonts
 font_heading = ("Arial", 13, "bold")
-font_subheading = ("Arial", 10)
+font_subheading = ("Arial", 10, "bold")
+
+# image uploader function
+def imageUploader():
+    fileTypes = [("Image files", "*.png;*.jpg;*.jpeg")]
+    path = filedialog.askopenfilename(filetypes=fileTypes)
+    # if file is selected
+    if len(path):
+      print('found path: ', path)
+      lbl_image_path = Label(frm_article, text=f"Image path: {path}", font=font_subheading)
+      lbl_image_path.grid(row=12, column=0, sticky='w', pady=5)
+    else:
+        print("No file is chosen !! Please choose a file.")
 
 def update_char_count(*args):
     print("text changed")
@@ -48,6 +62,10 @@ chk_historic_disclaimer = Checkbutton(frm_disclaimers, text="Include historic di
 lbl_tags = Label(frm_article, text="Enter tags (seperated by commas):", font=font_subheading)
 txt_tags = Text(frm_article, width=70, height=1)
 
+# Add image
+lbl_image = Label(frm_article, text="Add an image", font=font_subheading)
+btn_image = Button(frm_article, text="Upload Image", command=imageUploader)
+
 # Positioning
 frm_article.grid(row=0, column=0, padx=10, pady=5, sticky='n')
 lbl_article_frame_title.grid(row=0, column=0, sticky='w', pady=5)
@@ -62,6 +80,8 @@ chk_general_disclaimer.grid(row=0, column=0, sticky='w')
 chk_historic_disclaimer.grid(row=0, column=1, sticky='w')
 lbl_tags.grid(row=8, column=0, sticky='w', pady=5)
 txt_tags.grid(row=9, column=0, sticky='w', pady=5)
+lbl_image.grid(row=10, column=0, sticky='w', pady=5)
+btn_image.grid(row=11, column=0, sticky='w', pady=5)
 # End of Article Frame -------------------------------------------------------------
 
 # Extras Frame ---------------------------------------------------------------------
