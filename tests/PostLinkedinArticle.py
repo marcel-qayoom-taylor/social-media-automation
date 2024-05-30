@@ -15,6 +15,29 @@ load_dotenv()  # Loads variables from the .env file
 with open('../data.json', 'r') as f:
     data = json.load(f)
 
+def postArticle(page):
+    # Write article content
+    page.get_by_label("Write an article on LinkedIn").click()
+    page.get_by_role("radio", name="Dion Guagliardo").click()
+    page.get_by_role("button", name="Next").click()
+    page.get_by_placeholder("Title").press_sequentially(data['article']['title'])
+    
+    expect(page).to_have_url(re.compile(".*article/edit/")) # Wait for editor to save (have article/edit in url)
+    page.get_by_label("Article editor content").press_sequentially(data['article']['body'])
+
+    # Add image
+    page.get_by_label("Upload from computer").set_input_files(data['article']['image_path']) # image has to be in directory or use file picker but needs async
+    
+    # Move to publish page
+    page.get_by_role("button", name="Next").click(delay=2000) # wait for draft to save
+    page.get_by_label("Text editor for creating").press_sequentially(data['article']['intro']) # this not working but i need spacing
+    page.get_by_label("Text editor for creating").press_sequentially('\n\n') 
+
+    # Add hashtags
+    for tag in data['article']['tags']:
+        hashtag = '#' + str(tag) + ' '
+        page.get_by_label("Text editor for creating").press_sequentially(hashtag)
+
 def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False)
     try: 
@@ -44,27 +67,8 @@ def run(playwright: Playwright) -> None:
         context.storage_state(path="..\playwright\.auth\linkedinAuthState.json")
         print("Saved storage state to state.json")
 
-    # Write article content
-    page.get_by_label("Write an article on LinkedIn").click()
-    page.get_by_role("radio", name="Dion Guagliardo").click()
-    page.get_by_role("button", name="Next").click()
-    page.get_by_placeholder("Title").press_sequentially(data['article']['title'])
-    
-    expect(page).to_have_url(re.compile(".*article/edit/")) # Wait for editor to save (have article/edit in url)
-    page.get_by_label("Article editor content").press_sequentially(data['article']['body'])
-
-    # Add image
-    page.get_by_label("Upload from computer").set_input_files(data['article']['image_path']) # image has to be in directory or use file picker but needs async
-    
-    # Move to publish page
-    page.get_by_role("button", name="Next").click(delay=2000) # wait for draft to save
-    page.get_by_label("Text editor for creating").press_sequentially(data['article']['intro']) # this not working but i need spacing
-    page.get_by_label("Text editor for creating").press_sequentially('\n\n') 
-
-    # Add hashtags
-    for tag in data['article']['tags']:
-        hashtag = '#' + str(tag) + ' '
-        page.get_by_label("Text editor for creating").press_sequentially(hashtag)
+    # Post an article
+    postArticle(page)
 
     # ---------------------
     context.close()
