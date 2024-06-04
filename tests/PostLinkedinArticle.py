@@ -38,6 +38,19 @@ def postArticle(page):
         hashtag = '#' + str(tag) + ' '
         page.get_by_label("Text editor for creating").press_sequentially(hashtag)
 
+    # page.get_by_label("Publish").click()
+    # return page.url()
+
+def repostOnFortress(page, postLink):
+    page.goto(postLink) # update this with real link
+    page.get_by_role("button", name="Repost", exact=True).click()
+    page.get_by_role("button", name="Repost with your thoughts").click()
+    page.get_by_role("button", name="Dion Guagliardo Dion").click()
+    page.get_by_role("button", name="Dion Guagliardo").click()
+    page.get_by_role("radio", name="Fortress Family Office").click()
+    page.get_by_role("button", name="Save").click()
+    # page.get_by_role("button", name="Done").click()
+
 def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False)
     try: 
@@ -69,6 +82,9 @@ def run(playwright: Playwright) -> None:
 
     # Post an article
     postArticle(page)
+
+    # postLink = postArticle(page)
+    # repostOnFortress(page, postLink)
 
     # ---------------------
     context.close()
