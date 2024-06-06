@@ -23,7 +23,9 @@ def postArticle(page):
     page.get_by_placeholder("Title").press_sequentially(data['article']['title'])
     
     expect(page).to_have_url(re.compile(".*article/edit/")) # Wait for editor to save (have article/edit in url)
-    page.get_by_label("Article editor content").press_sequentially(data['article']['body'])
+    page.get_by_label("Article editor content").fill(data['article']['body'])
+
+    # TO DO: Disclaimers
 
     # Add image
     page.get_by_label("Upload from computer").set_input_files(data['article']['image_path']) # image has to be in directory or use file picker but needs async
@@ -42,14 +44,15 @@ def postArticle(page):
     # return page.url()
 
 def repostOnFortress(page, postLink):
-    page.goto(postLink) # update this with real link
+    page.goto(postLink)
     page.get_by_role("button", name="Repost", exact=True).click()
     page.get_by_role("button", name="Repost with your thoughts").click()
     page.get_by_role("button", name="Dion Guagliardo Dion").click()
     page.get_by_role("button", name="Dion Guagliardo").click()
     page.get_by_role("radio", name="Fortress Family Office").click()
     page.get_by_role("button", name="Save").click()
-    # page.get_by_role("button", name="Done").click()
+    page.get_by_role("button", name="Done").click()
+    page.get_by_role("button", name="Post").click()
 
 def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False)
@@ -81,10 +84,10 @@ def run(playwright: Playwright) -> None:
         print("Saved storage state to state.json")
 
     # Post an article
-    postArticle(page)
+    #postArticle(page)
 
     # postLink = postArticle(page)
-    # repostOnFortress(page, postLink)
+    repostOnFortress(page, "https://www.linkedin.com/posts/dion-guagliardo_inflation-interestrates-rba-activity-7204366788891959298-fzs1?utm_source=share&utm_medium=member_desktop")
 
     # ---------------------
     context.close()
