@@ -3,7 +3,6 @@
 
 import re
 import os
-import asyncio
 from playwright.sync_api import Playwright, sync_playwright, expect
 from dotenv import load_dotenv
 import json
@@ -18,8 +17,8 @@ with open('../data.json', 'r') as f:
 def postArticle(page):
     # Write article content
     page.get_by_label("Write an article on LinkedIn").click()
-    page.get_by_role("radio", name="Dion Guagliardo").click()
-    page.get_by_role("button", name="Next").click()
+    #page.get_by_role("radio", name="Dion Guagliardo").click()
+    #page.get_by_role("button", name="Next").click()
     page.get_by_placeholder("Title").press_sequentially(data['article']['title'])
     
     expect(page).to_have_url(re.compile(".*article/edit/")) # Wait for editor to save (have article/edit in url)
@@ -84,10 +83,10 @@ def run(playwright: Playwright) -> None:
         print("Saved storage state to state.json")
 
     # Post an article
-    #postArticle(page)
+    postArticle(page)
 
     # postLink = postArticle(page)
-    repostOnFortress(page, "https://www.linkedin.com/posts/dion-guagliardo_inflation-interestrates-rba-activity-7204366788891959298-fzs1?utm_source=share&utm_medium=member_desktop")
+    # repostOnFortress(page, "https://www.linkedin.com/posts/dion-guagliardo_inflation-interestrates-rba-activity-7204366788891959298-fzs1?utm_source=share&utm_medium=member_desktop")
 
     # ---------------------
     context.close()
