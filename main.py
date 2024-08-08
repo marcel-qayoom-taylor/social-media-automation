@@ -1,10 +1,13 @@
 from tkinter import *
 from tkinter import Label
 from tkinter import filedialog
+import json
 
 # Fonts
 font_heading = ("Arial", 13, "bold")
 font_subheading = ("Arial", 10, "bold")
+
+image_path = ""  # Global variable to store the image path
 
 # image uploader function
 def imageUploader():
@@ -13,7 +16,7 @@ def imageUploader():
     # if file is selected
     if len(path):
       print('found path: ', path)
-      lbl_image_path = Label(frm_article, text=f"Image path: {path}", font=font_subheading)
+      lbl_image_path = Label(frm_article, text="Image path: Not selected", font=font_subheading)
       lbl_image_path.grid(row=12, column=0, sticky='w', pady=5)
     else:
         print("No file is chosen !! Please choose a file.")
@@ -23,12 +26,56 @@ def update_char_count(*args):
     char_count = 280 - len(txt_twt_desc.get("1.0", "end-1c"))
     lbl_char_count.config(text=f"{char_count} characters remaining")
 
-def submit_data():
-  # Get the data from the entry field
-  data = entry.get()
-  # Process the data (replace with your logic)
-  print("You entered:", data)
+def imageUploader():
+    global image_path
+    fileTypes = [("Image files", "*.png;*.jpg;*.jpeg")]
+    path = filedialog.askopenfilename(filetypes=fileTypes)
+    # if file is selected
+    if path:
+        print('found path: ', path)
+        image_path = path  # Store the path in the global variable
+        image_path.config(text=f"Image path: {path}")
+    else:
+        print("No file is chosen !! Please choose a file.")
 
+def submit_data():
+    global image_path
+    # Get the tags as a list
+    tags = [tag.strip() for tag in txt_tags.get("1.0", END).strip().split(',')]
+    
+    # Prepare disclaimers list
+    disclaimers = []
+    if useGeneralDisclaimer.get():
+        disclaimers.append("General Disclaimer")  # Replace with your actual general disclaimer text
+    if useHistoricDisclaimer.get():
+        disclaimers.append("Historic Disclaimer")  # Replace with your actual historic disclaimer text
+
+    # Structure the data
+    data = {
+        "article": {
+            "title": ent_title.get(),
+            "body": txt_body.get("1.0", END).strip(),
+            "intro": txt_intro.get("1.0", END).strip(),
+            "image_path": image_path,
+            "tags": tags,
+            "disclaimers": disclaimers,
+            "linkedin_article_link": "",
+            "linkedin_post_link": "",
+            "facebook_post_link": ""
+        }
+    }
+
+    # Write the data to a JSON file
+    try:
+        with open("data.json", "w") as json_file:
+            json.dump(data, json_file, indent=2)
+        print("Data successfully written to data.json")
+    except Exception as e:
+        print(f"An error occurred while writing to the file: {e}")
+
+    # Print the data for verification
+    print("Submitted data:", json.dumps(data, indent=2))
+    
 # Create the main window
 window = Tk()
 window.title("Social Media Poster")
@@ -104,7 +151,7 @@ lbl_extras_frame_title.grid(row=0, column=1, sticky='w', pady=5)
 frm_twitter.grid(row=1, column=1, sticky='w', pady=5)
 lbl_twt_desc.grid(row=0, column=0, sticky='w', pady=5)
 txt_twt_desc.grid(row=1, column=0, sticky='w', pady=5)
-lbl_char_count.grid(row=1, column=1, sticky='w', pady=5, padx=5)
+lbl_char_count.grid(row=2, column=0, sticky='w', pady=5, padx=5)
 # End of Extras Frame ---------------------------------------------------------------------
 
 # Create the submit button
