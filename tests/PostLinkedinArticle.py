@@ -1,4 +1,4 @@
-# step-by-step run command: PWDEBUG=1 pytest -s PostLinkedinArticle.py
+# step-by-step run command: PWDEBUG=1 pytest -s PostLinkedinArticle.py IN GIT BASH TERMINAL
 
 
 import re
