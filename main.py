@@ -16,6 +16,8 @@ def load_static_data_from_json():
             rawData = json.load(file)
             data = {}
             data['tags'] = rawData.get('tags', [])
+            data['general_disclaimer'] = rawData.get('general_disclaimer', "")
+            data['historic_disclaimer'] = rawData.get('historic_disclaimer', "")
             return data
     except FileNotFoundError:
         print("staticData.json file not found.")
@@ -55,15 +57,16 @@ def imageUploader():
 
 def submit_data():
     global image_path
+    global static_data
     # Get the tags as a list
     tags = [tag.strip() for tag in txt_tags.get("1.0", END).strip().split(',')]
     
     # Prepare disclaimers list
     disclaimers = []
     if useGeneralDisclaimer.get():
-        disclaimers.append("General Disclaimer")  # Replace with your actual general disclaimer text
+        disclaimers.append(static_data['general_disclaimer'])  # Replace with your actual general disclaimer text
     if useHistoricDisclaimer.get():
-        disclaimers.append("Historic Disclaimer")  # Replace with your actual historic disclaimer text
+        disclaimers.append(static_data['historic_disclaimer'])  # Replace with your actual historic disclaimer text
 
     # Structure the data
     data = {
@@ -79,6 +82,8 @@ def submit_data():
             "facebook_post_link": ""
         }
     }
+
+    
 
     # Write the data to a JSON file
     try:
