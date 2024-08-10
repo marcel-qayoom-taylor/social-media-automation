@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import Label
 from tkinter import filedialog
 import json
+import yaml
 
 # Fonts
 font_heading = ("Arial", 13, "bold")
@@ -10,12 +11,12 @@ font_subheading = ("Arial", 10, "bold")
 image_path = ""  # Global variable to store the image path
 static_data = {} # Global variable to store the static data
 
-with open('./config.json', 'r') as file:
-    try: 
-        config = json.load(file)
+with open('./config.yaml', 'r') as file:
+    try:
+        config = yaml.safe_load(file)
         print("Config loaded: ", config)
     except FileNotFoundError:
-        print("staticData.json file not found.")
+        print("config.yaml file not found.")
 
 def load_static_data_from_json():
     try:
@@ -32,19 +33,6 @@ def load_static_data_from_json():
     except json.JSONDecodeError:
         print("Error decoding JSON from staticData.json.")
         return []
-
-# image uploader function
-# def imageUploader():
-#     fileTypes = [("Image files", "*.png;*.jpg;*.jpeg")]
-#     path = filedialog.askopenfilename(filetypes=fileTypes)
-#     # if file is selected
-#     if len(path):
-#       print('found path: ', path)
-#       lbl_image_path = Label(frm_article, text="Image path: Not selected", font=font_subheading)
-#       lbl_image_path.grid(row=12, column=0, sticky='w', pady=5)
-#       lbl_image_path.insert(text="Image path")
-#     else:
-#         print("No file is chosen !! Please choose a file.")
 
 def update_char_count(*args):
     print("text changed")
@@ -75,7 +63,26 @@ def submit_data():
         disclaimers.append(static_data['general_disclaimer'])  # Replace with your actual general disclaimer text
     if useHistoricDisclaimer.get():
         disclaimers.append(static_data['historic_disclaimer'])  # Replace with your actual historic disclaimer text
+    
+    config = {
+        "postingPlatforms": {
+            "linkedIn": {"enabled": postToLinkedIn.get()},
+            "facebook": {"enabled": postToFacebook.get()},
+            "instagram": {"enabled": postToInstagram.get()},
+            "squarespace": {"enabled": postToSquarespace.get()},
+            "twitter": {"enabled": postToTwitter.get()}
+        }
+    }
 
+    print('config is: ', config)
+
+    try:
+        with open("config.yaml", "w") as f:
+            yaml.dump(config, f)
+        print("Config successfully written to config.yaml")
+    except Exception as e:
+        print(f"An error occurred while writing to config.yaml: {e}")
+    
     # Structure the data
     data = {
         "article": {
@@ -97,10 +104,12 @@ def submit_data():
             json.dump(data, json_file, indent=2)
         print("Data successfully written to postData.json")
     except Exception as e:
-        print(f"An error occurred while writing to the file: {e}")
+        print(f"An error occurred while writing to postData.json: {e}")
 
     # Print the data for verification
     print("Submitted data:", json.dumps(data, indent=2))
+
+
     
 static_data = load_static_data_from_json()
 

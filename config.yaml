@@ -1,0 +1,11 @@
+postingPlatforms:
+  facebook:
+    enabled: true
+  instagram:
+    enabled: true
+  linkedIn:
+    enabled: true
+  squarespace:
+    enabled: true
+  twitter:
+    enabled: false
