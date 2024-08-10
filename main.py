@@ -81,9 +81,7 @@ def submit_data():
             "linkedin_post_link": "",
             "facebook_post_link": ""
         }
-    }
-
-    
+    }    
 
     # Write the data to a JSON file
     try:
