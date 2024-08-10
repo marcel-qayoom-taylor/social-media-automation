@@ -11,7 +11,7 @@ load_dotenv()  # Loads variables from the .env file
 
 
 # Read input data
-with open('../data.json', 'r') as f:
+with open('../postData.json', 'r') as f:
     data = json.load(f)
 
 def postArticle(page):

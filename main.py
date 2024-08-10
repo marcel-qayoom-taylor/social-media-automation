@@ -8,6 +8,21 @@ font_heading = ("Arial", 13, "bold")
 font_subheading = ("Arial", 10, "bold")
 
 image_path = ""  # Global variable to store the image path
+static_data = {} # Global variable to store the static data
+
+def load_static_data_from_json():
+    try:
+        with open('staticData.json', 'r') as file:
+            rawData = json.load(file)
+            data = {}
+            data['tags'] = rawData.get('tags', [])
+            return data
+    except FileNotFoundError:
+        print("staticData.json file not found.")
+        return []
+    except json.JSONDecodeError:
+        print("Error decoding JSON from staticData.json.")
+        return []
 
 # image uploader function
 def imageUploader():
@@ -67,15 +82,17 @@ def submit_data():
 
     # Write the data to a JSON file
     try:
-        with open("data.json", "w") as json_file:
+        with open("postData.json", "w") as json_file:
             json.dump(data, json_file, indent=2)
-        print("Data successfully written to data.json")
+        print("Data successfully written to postData.json")
     except Exception as e:
         print(f"An error occurred while writing to the file: {e}")
 
     # Print the data for verification
     print("Submitted data:", json.dumps(data, indent=2))
     
+static_data = load_static_data_from_json()
+
 # Create the main window
 window = Tk()
 window.title("Social Media Poster")
@@ -108,6 +125,8 @@ chk_historic_disclaimer = Checkbutton(frm_disclaimers, text="Include historic di
 # Tags label and entry
 lbl_tags = Label(frm_article, text="Enter tags (seperated by commas):", font=font_subheading)
 txt_tags = Text(frm_article, width=70, height=1)
+
+txt_tags.insert(0.0, ", ".join(static_data['tags'])) # Prefill the text input field
 
 # Add image
 lbl_image = Label(frm_article, text="Add an image", font=font_subheading)
