@@ -155,7 +155,6 @@ lbl_image.grid(row=10, column=0, sticky='w', pady=5)
 lbl_image_path.grid(row=11, column=0, sticky='w', pady=5)
 btn_image.grid(row=12, column=0, sticky='w', pady=5)
 # End of Article Frame -------------------------------------------------------------
-
 # Extras Frame ---------------------------------------------------------------------
 frm_extras = Frame(window, padx=10, pady=5)
 lbl_extras_frame_title = Label(frm_extras, text="Extra Details", font=font_heading)
@@ -170,13 +169,38 @@ txt_twt_desc.bind("<KeyRelease>", update_char_count)
 # Character count label
 lbl_char_count = Label(frm_twitter, text="280 chars remaining", font=font_subheading)
 
+# Platforms
+lbl_platforms = Label(frm_extras, text="Post to:", font=font_heading)
+
+frm_platforms = Frame(frm_extras, pady=5)
+postToLinkedIn = BooleanVar(value=True)
+postToFacebook = BooleanVar(value=True)
+postToInstagram = BooleanVar(value=True)
+postToSquarespace = BooleanVar(value=True)
+postToTwitter = BooleanVar(value=True)
+
+chk_linkedin = Checkbutton(frm_platforms, text="LinkedIn", onvalue=True, offvalue=False, variable=postToLinkedIn)
+chk_facebook = Checkbutton(frm_platforms, text="Facebook", onvalue=True, offvalue=False, variable=postToFacebook)
+chk_instagram = Checkbutton(frm_platforms, text="Instagram", onvalue=True, offvalue=False, variable=postToInstagram)
+chk_squarespace = Checkbutton(frm_platforms, text="Squarespace", onvalue=True, offvalue=False, variable=postToSquarespace)
+chk_twitter = Checkbutton(frm_platforms, text="Twitter", onvalue=True, offvalue=False, variable=postToTwitter)
+
 # Positioning
 frm_extras.grid(row=0, column=1, padx=10, pady=5, sticky='n')
-lbl_extras_frame_title.grid(row=0, column=1, sticky='w', pady=5)
-frm_twitter.grid(row=1, column=1, sticky='w', pady=5)
+lbl_extras_frame_title.grid(row=0, column=0, sticky='w', pady=5)
+frm_twitter.grid(row=1, column=0, sticky='w', pady=5)
 lbl_twt_desc.grid(row=0, column=0, sticky='w', pady=5)
 txt_twt_desc.grid(row=1, column=0, sticky='w', pady=5)
 lbl_char_count.grid(row=2, column=0, sticky='w', pady=5, padx=5)
+
+lbl_platforms.grid(row=3, column=0, sticky='w', pady=5)
+frm_platforms.grid(row=4, column=0, sticky='w', pady=5)
+chk_linkedin.grid(row=0, column=0, sticky='w', padx=(0,5))
+chk_facebook.grid(row=0, column=1, sticky='w', padx=(0,5))
+chk_instagram.grid(row=0, column=2, sticky='w', padx=(0,5))
+chk_squarespace.grid(row=0, column=3, sticky='w', padx=(0,5))
+chk_twitter.grid(row=0, column=4, sticky='w', padx=(0,5))
+
 # End of Extras Frame ---------------------------------------------------------------------
 
 # Create the submit button
