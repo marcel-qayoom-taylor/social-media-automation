@@ -16,8 +16,6 @@ with open('../postData.json', 'r') as f:
 def postArticle(page):
     # Write article content
     page.get_by_label("Write an article on LinkedIn").click()
-    #page.get_by_role("radio", name="Dion Guagliardo").click()
-    #page.get_by_role("button", name="Next").click()
     page.get_by_placeholder("Title").press_sequentially(data['article']['title'])
     
     expect(page).to_have_url(re.compile(".*article/edit/")) # Wait for editor to save (have article/edit in url)
