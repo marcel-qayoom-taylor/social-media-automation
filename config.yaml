@@ -8,4 +8,4 @@ postingPlatforms:
   squarespace:
     enabled: true
   twitter:
-    enabled: false
+    enabled: true

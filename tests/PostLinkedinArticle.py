@@ -24,8 +24,11 @@ def postArticle(page):
     page.get_by_label("Article editor content").fill(data['article']['body'])
 
     # Add image
-    page.get_by_label("Upload from computer").set_input_files(data['article']['image_path']) # image has to be in directory or use file picker but needs async
-    
+    with page.expect_file_chooser() as fc_info:
+        page.get_by_label("Upload from computer").click()
+    file_chooser = fc_info.value
+    file_chooser.set_files(data['article']['image_path']) 
+
     # Move to publish page
     page.get_by_role("button", name="Next").click(delay=2000) # wait for draft to save
     page.get_by_label("Text editor for creating").press_sequentially(data['article']['intro']) # this not working but i need spacing

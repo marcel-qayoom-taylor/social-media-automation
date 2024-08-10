@@ -108,8 +108,6 @@ def submit_data():
 
     # Print the data for verification
     print("Submitted data:", json.dumps(data, indent=2))
-
-
     
 static_data = load_static_data_from_json()
 
