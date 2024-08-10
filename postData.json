@@ -1,17 +1,16 @@
 {
   "article": {
-    "title": "",
-    "body": "",
-    "intro": "",
-    "image_path": "",
+    "title": "test",
+    "body": "test",
+    "intro": "test 2",
+    "image_path": "C:/Users/MQT/Downloads/HowToModal2.png",
     "tags": [
       "Portfolio Management",
       "Family Office",
       "Investing"
     ],
     "disclaimers": [
-      "This information is of a general nature only and may not be relevant to your particular circumstances. The circumstances of each investor are different, and you should seek advice from an investment adviser who can consider if the strategies and products are right for you. Historical performance is often not a reliable indicator of future performance. You should not rely solely on historical performance to make investment decisions.",
-      "Historical performance is often not a reliable indicator of future performance. You should not rely solely on historical performance to make investment decisions."
+      "This information is of a general nature only and may not be relevant to your particular circumstances. The circumstances of each investor are different, and you should seek advice from an investment adviser who can consider if the strategies and products are right for you. Historical performance is often not a reliable indicator of future performance. You should not rely solely on historical performance to make investment decisions."
     ],
     "linkedin_article_link": "",
     "linkedin_post_link": "",

@@ -24,8 +24,6 @@ def postArticle(page):
     expect(page).to_have_url(re.compile(".*article/edit/")) # Wait for editor to save (have article/edit in url)
     page.get_by_label("Article editor content").fill(data['article']['body'])
 
-    # TO DO: Disclaimers
-
     # Add image
     page.get_by_label("Upload from computer").set_input_files(data['article']['image_path']) # image has to be in directory or use file picker but needs async
     

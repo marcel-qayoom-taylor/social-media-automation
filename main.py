@@ -27,16 +27,17 @@ def load_static_data_from_json():
         return []
 
 # image uploader function
-def imageUploader():
-    fileTypes = [("Image files", "*.png;*.jpg;*.jpeg")]
-    path = filedialog.askopenfilename(filetypes=fileTypes)
-    # if file is selected
-    if len(path):
-      print('found path: ', path)
-      lbl_image_path = Label(frm_article, text="Image path: Not selected", font=font_subheading)
-      lbl_image_path.grid(row=12, column=0, sticky='w', pady=5)
-    else:
-        print("No file is chosen !! Please choose a file.")
+# def imageUploader():
+#     fileTypes = [("Image files", "*.png;*.jpg;*.jpeg")]
+#     path = filedialog.askopenfilename(filetypes=fileTypes)
+#     # if file is selected
+#     if len(path):
+#       print('found path: ', path)
+#       lbl_image_path = Label(frm_article, text="Image path: Not selected", font=font_subheading)
+#       lbl_image_path.grid(row=12, column=0, sticky='w', pady=5)
+#       lbl_image_path.insert(text="Image path")
+#     else:
+#         print("No file is chosen !! Please choose a file.")
 
 def update_char_count(*args):
     print("text changed")
@@ -51,7 +52,7 @@ def imageUploader():
     if path:
         print('found path: ', path)
         image_path = path  # Store the path in the global variable
-        image_path.config(text=f"Image path: {path}")
+        lbl_image_path.config(text=f"Image path: {path}")
     else:
         print("No file is chosen !! Please choose a file.")
 
@@ -133,6 +134,7 @@ txt_tags.insert(0.0, ", ".join(static_data['tags'])) # Prefill the text input fi
 
 # Add image
 lbl_image = Label(frm_article, text="Add an image", font=font_subheading)
+lbl_image_path = Label(frm_article, text="Image path: ")
 btn_image = Button(frm_article, text="Upload Image", command=imageUploader)
 
 # Positioning
@@ -150,7 +152,8 @@ chk_historic_disclaimer.grid(row=0, column=1, sticky='w')
 lbl_tags.grid(row=8, column=0, sticky='w', pady=5)
 txt_tags.grid(row=9, column=0, sticky='w', pady=5)
 lbl_image.grid(row=10, column=0, sticky='w', pady=5)
-btn_image.grid(row=11, column=0, sticky='w', pady=5)
+lbl_image_path.grid(row=11, column=0, sticky='w', pady=5)
+btn_image.grid(row=12, column=0, sticky='w', pady=5)
 # End of Article Frame -------------------------------------------------------------
 
 # Extras Frame ---------------------------------------------------------------------
