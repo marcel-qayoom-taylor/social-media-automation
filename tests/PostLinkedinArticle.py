@@ -9,7 +9,6 @@ import json
 
 load_dotenv()  # Loads variables from the .env file
 
-
 # Read input data
 with open('../postData.json', 'r') as f:
     data = json.load(f)

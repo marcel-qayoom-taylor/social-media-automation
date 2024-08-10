@@ -1,0 +1,19 @@
+{
+  "postingPlatforms": {
+    "linkedin": {
+      "enabled": true
+    },
+    "facebook": {
+      "enabled": true
+    },
+    "twitter": {
+      "enabled": true
+    },
+    "instagram": {
+      "enabled": true
+    },  
+    "squarespace": {
+      "enabled": true
+    }
+  }
+}

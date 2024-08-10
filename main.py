@@ -10,6 +10,13 @@ font_subheading = ("Arial", 10, "bold")
 image_path = ""  # Global variable to store the image path
 static_data = {} # Global variable to store the static data
 
+with open('./config.json', 'r') as file:
+    try: 
+        config = json.load(file)
+        print("Config loaded: ", config)
+    except FileNotFoundError:
+        print("staticData.json file not found.")
+
 def load_static_data_from_json():
     try:
         with open('staticData.json', 'r') as file:
