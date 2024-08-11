@@ -26,19 +26,24 @@ def postArticle(page):
         page.get_by_label("Upload from computer").click()
     file_chooser = fc_info.value
     file_chooser.set_files(data['article']['image_path']) 
+    page.get_by_label("Next").click(delay=2000)
 
     # Move to publish page
     page.get_by_role("button", name="Next").click(delay=2000) # wait for draft to save
-    page.get_by_label("Text editor for creating").press_sequentially(data['article']['intro']) # this not working but i need spacing
-    page.get_by_label("Text editor for creating").press_sequentially('\n\n') 
+    page.get_by_label("Text editor for creating").fill(data['article']['intro']) # this not working but i need spacing
+    page.get_by_label("Text editor for creating").fill('\n\n') 
 
     # Add hashtags
     for tag in data['article']['tags']:
         hashtag = '#' + str(tag) + ' '
-        page.get_by_label("Text editor for creating").press_sequentially(hashtag)
+        page.get_by_label("Text editor for creating").fill(hashtag)
 
-    # page.get_by_label("Publish").click()
-    # return page.url()
+    if os.getenv("MODE") == "PROD":
+        page.get_by_label("Publish").click()
+        return page.url()
+    else:
+        print("Article successfully created. Skipping publish step.")
+        return page.url()
 
 def repostOnFortress(page, postLink):
     page.goto(postLink)
@@ -49,7 +54,10 @@ def repostOnFortress(page, postLink):
     page.get_by_role("radio", name="Fortress Family Office").click()
     page.get_by_role("button", name="Save").click()
     page.get_by_role("button", name="Done").click()
-    page.get_by_role("button", name="Post").click()
+    if os.getenv("MODE") == "PROD":
+        page.get_by_role("button", name="Post").click()
+    else:
+        print("Repost successfully near-complete. Skipping publish step.")
 
 def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False)
@@ -81,7 +89,11 @@ def run(playwright: Playwright) -> None:
         print("Saved storage state to state.json")
 
     # Post an article
+    
     postArticle(page)
+    #postLink = postArticle(page)
+    #repostOnFortress(page, postLink)
+
 
     # postLink = postArticle(page)
     # repostOnFortress(page, "https://www.linkedin.com/posts/dion-guagliardo_inflation-interestrates-rba-activity-7204366788891959298-fzs1?utm_source=share&utm_medium=member_desktop")
