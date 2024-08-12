@@ -74,8 +74,6 @@ def submit_data():
         }
     }
 
-    print('config is: ', config)
-
     try:
         with open("config.yaml", "w") as f:
             yaml.dump(config, f)
