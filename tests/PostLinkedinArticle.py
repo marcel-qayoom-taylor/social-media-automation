@@ -13,9 +13,6 @@ load_dotenv()  # Loads variables from the .env file
 current_dir = os.path.dirname(os.path.abspath(__file__))
 json_path = os.path.join(current_dir, '../postData.json')
 
-print("Current working directory:", os.getcwd())
-print("Looking for postData.json at:", json_path)
-
 with open(json_path, 'r') as f:
     if not os.path.exists(json_path):
         raise FileNotFoundError(f"Cannot find the file: {json_path}")
@@ -28,6 +25,8 @@ def postArticle(page):
     
     expect(page).to_have_url(re.compile(".*article/edit/")) # Wait for editor to save (have article/edit in url)
     page.get_by_label("Article editor content").fill(data['article']['body'])
+
+    # NEED TO ADD DISCLAIMERS
 
     # Add image
     with page.expect_file_chooser() as fc_info:
@@ -51,6 +50,7 @@ def postArticle(page):
         return page.url()
     else:
         print("Article successfully created. Skipping publish step.")
+        page.wait_for_timeout(3000) 
         return page.url()
 
 def repostOnFortress(page, postLink):

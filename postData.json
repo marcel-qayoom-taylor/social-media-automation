@@ -1,9 +1,9 @@
 {
   "article": {
-    "title": "Test",
-    "body": "TEst",
-    "intro": "test",
-    "image_path": "C:/Users/MQT/Downloads/Crowdstrike.png",
+    "title": "This is a test article",
+    "body": "This is a test body",
+    "intro": "test intro",
+    "image_path": "C:/Users/MQT/Downloads/Matchalk.png",
     "tags": [
       "Portfolio Management",
       "Family Office",
@@ -12,6 +12,7 @@
     "disclaimers": [
       "This information is of a general nature only and may not be relevant to your particular circumstances. The circumstances of each investor are different, and you should seek advice from an investment adviser who can consider if the strategies and products are right for you. Historical performance is often not a reliable indicator of future performance. You should not rely solely on historical performance to make investment decisions."
     ],
+    "twitter_post": "Test twitter",
     "linkedin_article_link": "",
     "linkedin_post_link": "",
     "facebook_post_link": ""

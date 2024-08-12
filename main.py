@@ -35,7 +35,6 @@ def load_static_data_from_json():
         return []
 
 def update_char_count(*args):
-    print("text changed")
     char_count = 280 - len(txt_twt_desc.get("1.0", "end-1c"))
     lbl_char_count.config(text=f"{char_count} characters remaining")
 
@@ -90,6 +89,7 @@ def submit_data():
             "image_path": image_path,
             "tags": tags,
             "disclaimers": disclaimers,
+            "twitter_post": txt_twt_desc.get("1.0", END).strip(),
             "linkedin_article_link": "",
             "linkedin_post_link": "",
             "facebook_post_link": ""

@@ -1,15 +1,11 @@
 postingPlatforms:
-  mailchimp:
+  facebook:
+    enabled: false
+  instagram:
     enabled: false
   linkedIn:
     enabled: true
   squarespace:
     enabled: false
-  medium: 
-    enabled: false
-  facebook:
-    enabled: false
-  instagram:
-    enabled: false
   twitter:
-    enabled: false
+    enabled: true
