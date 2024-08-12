@@ -10,7 +10,15 @@ import json
 load_dotenv()  # Loads variables from the .env file
 
 # Read input data
-with open('../postData.json', 'r') as f:
+current_dir = os.path.dirname(os.path.abspath(__file__))
+json_path = os.path.join(current_dir, '../postData.json')
+
+print("Current working directory:", os.getcwd())
+print("Looking for postData.json at:", json_path)
+
+with open(json_path, 'r') as f:
+    if not os.path.exists(json_path):
+        raise FileNotFoundError(f"Cannot find the file: {json_path}")
     data = json.load(f)
 
 def postArticle(page):
@@ -61,17 +69,23 @@ def repostOnFortress(page, postLink):
 
 def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False)
+    
+    # Get the absolute path for the auth state file
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    auth_state_path = os.path.join(current_dir, '..', 'playwright', '.auth', 'linkedinAuthState.json')
+    
     try: 
-        context = browser.new_context(storage_state="..\playwright\.auth\linkedinAuthState.json")
+        context = browser.new_context(storage_state=auth_state_path)
         
-        # Open linkedin using saved credentials
+        # Open LinkedIn using saved credentials
         page = context.new_page()
         page.goto("https://www.linkedin.com/feed/")
         print("Loaded existing storage state from linkedinAuthState.json")
-    except FileNotFoundError: # if no credentials cached
+    except FileNotFoundError:
         print("Could not find existing auth state from linkedinAuthState.json")
         linkedinUsername = os.getenv("LINKEDIN_USERNAME")
         linkedinPassword = os.getenv("LINKEDIN_PASSWORD")
+        
         if not linkedinUsername or not linkedinPassword:
             print("Error: Missing LinkedIn Credentials! Please ensure both 'linkedinUsername' and 'linkedinPassword' environment variables are set in your '.env' file.")
             return
@@ -85,8 +99,8 @@ def run(playwright: Playwright) -> None:
         page.get_by_label("Sign in", exact=True).click()
         
         # Save storage state for future use
-        context.storage_state(path="..\playwright\.auth\linkedinAuthState.json")
-        print("Saved storage state to state.json")
+        context.storage_state(path=auth_state_path)
+        print("Saved storage state to linkedinAuthState.json")
 
     # Post an article
     
