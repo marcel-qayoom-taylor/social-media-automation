@@ -16,10 +16,10 @@ json_path = os.path.join(current_dir, '../postData.json')
 with open(json_path, 'r') as f:
     if not os.path.exists(json_path):
         raise FileNotFoundError(f"Cannot find the file: {json_path}")
-    data = json.load(f)
+    data = json.load(f)    
 
-def run(playwright: Playwright) -> None:
-    browser = playwright.chromium.launch(headless=False)
+def postTweet(browser):
+    context = browser.new_context()
 
     twitterUsername = os.getenv("TWITTER_USERNAME")
     twitterPassword = os.getenv("TWITTER_PASSWORD")
@@ -27,26 +27,64 @@ def run(playwright: Playwright) -> None:
         print("Error: Missing Twitter Credentials! Please ensure both 'twitterUsername' and 'twitterPassword' environment variables are set in your '.env' file.")
         return
     
-    # Login to LinkedIn
-    context = browser.new_context()
+    # Login to Twitter
+    
     page = context.new_page()
     page.goto("https://x.com/i/flow/login")
     page.get_by_label("Phone, email address, or").fill(twitterUsername)
     page.get_by_role("button", name="Next").click()
     page.get_by_label("Password", exact=True).fill(twitterPassword)
     page.get_by_test_id("LoginForm_Login_Button").click()
+
+    # Post tweet
+
     page.get_by_test_id("tweetTextarea_0").fill(data['article']['twitter_post'])
-    page.get_by_test_id("tweetButtonInline").hover()
-    page.wait_for_timeout(5000) 
 
+    if os.getenv("MODE") == "PROD":
+        page.get_by_test_id("tweetButtonInline").click()
+    else:
+        print("Twitter post successfully created. Skipping publish step due to being in dev mode")
+        page.wait_for_timeout(5000) 
 
-    # postLink = postArticle(page)
-    # repostOnFortress(page, "https://www.linkedin.com/posts/dion-guagliardo_inflation-interestrates-rba-activity-7204366788891959298-fzs1?utm_source=share&utm_medium=member_desktop")
+    context.close()
 
-    # ---------------------
+def retweet(browser, postLink):
+    context = browser.new_context()
+    
+    repostAccountUsername = os.getenv("FORTRESS_TWITTER_USERNAME")
+    repostAccountPassword = os.getenv("FORTRESS_TWITTER_PASSWORD")
+    if not repostAccountUsername or not repostAccountPassword:
+        print("Error: Missing Twitter Credentials! Please ensure both 'twitterUsername' and 'twitterPassword' environment variables are set in your '.env' file.")
+        return
+    
+    # Login to Twitter
+    context = browser.new_context()
+    page = context.new_page()
+    page.goto("https://x.com/i/flow/login")
+    page.get_by_label("Phone, email address, or").fill(repostAccountUsername)
+    page.get_by_role("button", name="Next").click()
+    page.get_by_label("Password", exact=True).fill(repostAccountPassword)
+    page.get_by_test_id("LoginForm_Login_Button").click()
+
+    page.goto(postLink)
+    page.get_by_role("button", name="Retweet", exact=True).click()
+
+    page.locator('button[data-testid="retweet"]:first-of-type').click()
+    
+    if os.getenv("MODE") == "PROD":
+        page.get_by_test_id("retweetConfirm").click()
+    else:
+        print("Tweet successfully reposted. Skipping repost step due to being in dev mode")
+        page.wait_for_timeout(5000)
+
     context.close()
 
 
+def run(playwright: Playwright) -> None:
+    browser = playwright.chromium.launch(headless=False)
+
+    postTweet(browser)
+    retweet(browser, "https://twitter.com/fortress_fo/status/1440730730730730730")
 
 with sync_playwright() as playwright:
     run(playwright)
