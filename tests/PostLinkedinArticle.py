@@ -75,9 +75,9 @@ def run(playwright: Playwright) -> None:
     auth_state_path = os.path.join(current_dir, '..', 'playwright', '.auth', 'linkedinAuthState.json')
     
     try: 
-        context = browser.new_context(storage_state=auth_state_path)
-        
         # Open LinkedIn using saved credentials
+
+        context = browser.new_context(storage_state=auth_state_path)        
         page = context.new_page()
         page.goto("https://www.linkedin.com/feed/")
         print("Loaded existing storage state from linkedinAuthState.json")
@@ -92,6 +92,7 @@ def run(playwright: Playwright) -> None:
         
         # Login to LinkedIn
         context = browser.new_context()
+        
         page = context.new_page()
         page.goto("https://www.linkedin.com/login")
         page.get_by_label("Email or phone").press_sequentially(linkedinUsername)

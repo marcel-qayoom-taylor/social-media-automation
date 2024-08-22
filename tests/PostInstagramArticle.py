@@ -55,14 +55,28 @@ def postArticle(page):
         page.wait_for_timeout(3000)
 
 def run(playwright: Playwright) -> None:
+    browser = playwright.chromium.launch(headless=False)
+    
+    # # Get the absolute path for the auth state file
+    # current_dir = os.path.dirname(os.path.abspath(__file__))
+    # auth_state_path = os.path.join(current_dir, '..', 'playwright', '.auth', 'instagramAuthState.json')
+    # print('auth path is ' + auth_state_path)
+
+    # try: 
+    #     # Open Instagram using saved credentials
+    #     context = browser.new_context(storage_state=auth_state_path)
+    #     page = context.new_page()
+    #     page.goto("https://www.instagram.com")
+    #     print("Loaded existing storage state from instagramAuthState.json")
+    # except FileNotFoundError:
+    print("Could not find existing auth state from instagramAuthState.json")
     instagramUsername = os.getenv("INSTAGRAM_USERNAME")
     instagramPassword = os.getenv("INSTAGRAM_PASSWORD")
-    
+
     if not instagramUsername or not instagramPassword:
         print("Error: Missing instagram Credentials! Please ensure both 'instagramUsername' and 'instagramPassword' environment variables are set in your '.env' file.")
         return
 
-    browser = playwright.chromium.launch(headless=False)
     context = browser.new_context()
     page = context.new_page()
     page.goto("https://www.instagram.com/accounts/login")
@@ -74,9 +88,9 @@ def run(playwright: Playwright) -> None:
     postArticle(page)
 
     # ---------------------
-    #context.close()
-
-
+    context.close()
+    browser.close()
+    playwright.stop()
 
 with sync_playwright() as playwright:
     run(playwright)
