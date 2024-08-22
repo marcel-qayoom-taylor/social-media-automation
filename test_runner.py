@@ -15,7 +15,7 @@ platform_tests = {
     'squarespace': 'tests/test_squarespace.py',
     'medium': 'tests/PostMediumArticle.py',
     'facebook': 'tests/PostFacebookArticle.py',
-    'instagram': 'tests/PostInstaArticle.py',
+    'instagram': 'tests/PostInstagramArticle.py',
     'twitter': 'tests/PostTwitterArticle.py',
 }
 
