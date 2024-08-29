@@ -1,4 +1,4 @@
-# step-by-step run command: PWDEBUG=1 pytest -s PostLinkedinArticle.py IN GIT BASH TERMINAL
+# step-by-step run command: PWDEBUG=1 pytest -s PostMediumArticle.py IN GIT BASH TERMINAL
 
 
 import re
@@ -11,21 +11,30 @@ load_dotenv()  # Loads variables from the .env file
 
 
 # Read input data
-with open('../postData.json', 'r') as f:
+current_dir = os.path.dirname(os.path.abspath(__file__))
+json_path = os.path.join(current_dir, '../postData.json')
+
+with open(json_path, 'r') as f:
+    if not os.path.exists(json_path):
+        raise FileNotFoundError(f"Cannot find the file: {json_path}")
     data = json.load(f)
 
 # def postArticle(page):
 #     # Write article content
 
-
 def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False)
+
+    # Get the absolute path for the auth state file
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    auth_state_path = os.path.join(current_dir, '..', 'playwright', '.auth', 'squarespaceAuthState.json')
+
     try: 
-        context = browser.new_context(storage_state="..\playwright\.auth\mediumAuthState.json")
+        context = browser.new_context(storage_state=auth_state_path)
         
         # Open medium using saved credentials
         page = context.new_page()
-        page.goto("https://medium.com/")
+        page.goto("https://medium.com/new-story")
         print("Loaded existing storage state from mediumAuthState.json")
     except FileNotFoundError: # if no credentials cached
         print("Could not find existing auth state from mediumAuthState.json")

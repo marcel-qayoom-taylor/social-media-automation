@@ -1,3 +1,4 @@
+# DONE but auth saving not working
 # step-by-step run command: PWDEBUG=1 pytest -s PostInstagramArticle.py IN GIT BASH TERMINAL
 
 import os
