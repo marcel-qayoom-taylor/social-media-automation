@@ -74,10 +74,7 @@ def retweet(browser, postLink):
     if os.getenv("MODE") == "PROD":
         page.get_by_test_id("retweetConfirm").click()
     else:
-        print("Tweet successfully reposted. Skipping repost step due to being in dev mode")
-        page.wait_for_timeout(5000)
-
-    context.close()
+        page.pause()
 
 
 def run(playwright: Playwright) -> None:

@@ -51,7 +51,6 @@ def postArticle(page):
         page.get_by_role("button", name="Share").click()
     else:
         print("Post successfully created. Skipping publish step.")
-        page.wait_for_timeout(3000)
 
 def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False)
@@ -86,10 +85,8 @@ def run(playwright: Playwright) -> None:
     # Post an article
     postArticle(page)
 
-    # ---------------------
-    context.close()
-    browser.close()
-    playwright.stop()
+    page.pause()
+
 
 with sync_playwright() as playwright:
     run(playwright)

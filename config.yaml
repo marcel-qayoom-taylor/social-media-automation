@@ -4,8 +4,8 @@ postingPlatforms:
   instagram:
     enabled: true
   linkedIn:
-    enabled: true
+    enabled: false
   squarespace:
     enabled: true
   twitter:
-    enabled: true
+    enabled: false

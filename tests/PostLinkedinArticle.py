@@ -114,9 +114,7 @@ def run(playwright: Playwright) -> None:
     # repostOnFortress(page, "https://www.linkedin.com/posts/dion-guagliardo_inflation-interestrates-rba-activity-7204366788891959298-fzs1?utm_source=share&utm_medium=member_desktop")
 
     # ---------------------
-    context.close()
-    browser.close()
-    playwright.stop()
+    page.pause()
 
 
 with sync_playwright() as playwright:
