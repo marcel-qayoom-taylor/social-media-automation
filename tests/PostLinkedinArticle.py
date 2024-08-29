@@ -18,15 +18,23 @@ with open(json_path, 'r') as f:
         raise FileNotFoundError(f"Cannot find the file: {json_path}")
     data = json.load(f)
 
+def format_hashtag(tag: str) -> str:
+    return f'#{tag.replace(" ", "").lower()}'
+
 def postArticle(page):
     # Write article content
     page.get_by_label("Write an article on LinkedIn").click()
-    page.get_by_placeholder("Title").press_sequentially(data['article']['title'])
+    page.get_by_placeholder("Title").fill(data['article']['title'])
     
     expect(page).to_have_url(re.compile(".*article/edit/")) # Wait for editor to save (have article/edit in url)
-    page.get_by_label("Article editor content").fill(data['article']['body'])
+    
+    bodyContent = data['article']['body']
 
-    # NEED TO ADD DISCLAIMERS
+    for disclaimer in data['article']['disclaimers']:
+        bodyContent += "\n\n"
+        bodyContent += f"\n{disclaimer}"
+
+    page.get_by_label("Article editor content").fill(bodyContent)
 
     # Add image
     with page.expect_file_chooser() as fc_info:
@@ -35,23 +43,25 @@ def postArticle(page):
     file_chooser.set_files(data['article']['image_path']) 
     page.get_by_label("Next").click(delay=2000)
 
+    # Pause to review main article content
+    page.pause()
+
     # Move to publish page
-    page.get_by_role("button", name="Next").click(delay=2000) # wait for draft to save
-    page.get_by_label("Text editor for creating").fill(data['article']['intro']) # this not working but i need spacing
-    page.get_by_label("Text editor for creating").fill('\n\n') 
+    page.get_by_role("button", name="Next").click() # wait for draft to save
+    page.get_by_label("Text editor for creating").type(data['article']['intro']) # this not working but i need spacing
+    page.get_by_label("Text editor for creating").type('\n\n') 
 
     # Add hashtags
     for tag in data['article']['tags']:
-        hashtag = '#' + str(tag) + ' '
-        page.get_by_label("Text editor for creating").fill(hashtag)
+        formatted_tag = format_hashtag(tag)
+        page.get_by_label("Text editor for creating").type(formatted_tag + ' ')
 
     if os.getenv("MODE") == "PROD":
         page.get_by_label("Publish").click()
-        return page.url()
+        return page.url
     else:
         print("Article successfully created. Skipping publish step.")
-        page.wait_for_timeout(3000) 
-        return page.url()
+        return page.url
 
 def repostOnFortress(page, postLink):
     page.goto(postLink)
@@ -67,6 +77,18 @@ def repostOnFortress(page, postLink):
     else:
         print("Repost successfully near-complete. Skipping publish step.")
 
+def savePostURL(data, postUrl):
+    # Update the value of 'linkedin_post_link' in the data dictionary
+    data["article"]["linkedin_post_link"] = postUrl
+
+    # Write the updated data back to the JSON file
+    try:
+        with open("postData.json", "w") as json_file:
+            json.dump(data, json_file, indent=2)
+        print("Data successfully updated and written to postData.json")
+    except Exception as e:
+        print(f"An error occurred while writing to postData.json: {e}")
+
 def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False)
     
@@ -76,7 +98,6 @@ def run(playwright: Playwright) -> None:
     
     try: 
         # Open LinkedIn using saved credentials
-
         context = browser.new_context(storage_state=auth_state_path)        
         page = context.new_page()
         page.goto("https://www.linkedin.com/feed/")
@@ -92,11 +113,10 @@ def run(playwright: Playwright) -> None:
         
         # Login to LinkedIn
         context = browser.new_context()
-        
         page = context.new_page()
         page.goto("https://www.linkedin.com/login")
-        page.get_by_label("Email or phone").press_sequentially(linkedinUsername)
-        page.get_by_label("Password", exact=True).press_sequentially(linkedinPassword)
+        page.get_by_label("Email or phone").fill(linkedinUsername)
+        page.get_by_label("Password", exact=True).fill(linkedinPassword)
         page.get_by_label("Sign in", exact=True).click()
         
         # Save storage state for future use
@@ -104,16 +124,12 @@ def run(playwright: Playwright) -> None:
         print("Saved storage state to linkedinAuthState.json")
 
     # Post an article
+    postUrl = postArticle(page)
     
-    postArticle(page)
-    #postLink = postArticle(page)
-    #repostOnFortress(page, postLink)
+    #savePostURL(data, postUrl)
+    #repostOnFortress(page, postUrl)
+    
 
-
-    # postLink = postArticle(page)
-    # repostOnFortress(page, "https://www.linkedin.com/posts/dion-guagliardo_inflation-interestrates-rba-activity-7204366788891959298-fzs1?utm_source=share&utm_medium=member_desktop")
-
-    # ---------------------
     page.pause()
 
 
