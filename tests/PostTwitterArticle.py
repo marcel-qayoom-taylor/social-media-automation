@@ -18,7 +18,7 @@ with open(json_path, 'r') as f:
         raise FileNotFoundError(f"Cannot find the file: {json_path}")
     data = json.load(f)    
 
-def postTweet(browser):
+def postTweet(browser, postContent):
     context = browser.new_context()
 
     twitterUsername = os.getenv("TWITTER_USERNAME")
@@ -37,16 +37,13 @@ def postTweet(browser):
     page.get_by_test_id("LoginForm_Login_Button").click()
 
     # Post tweet
-
-    page.get_by_test_id("tweetTextarea_0").fill(data['article']['twitter_post'])
+    page.get_by_test_id("tweetTextarea_0").type(postContent)
 
     if os.getenv("MODE") == "PROD":
         page.get_by_test_id("tweetButtonInline").click()
     else:
         print("Twitter post successfully created. Skipping publish step due to being in dev mode")
-        page.wait_for_timeout(5000) 
-
-    context.close()
+        page.pause()
 
 def retweet(browser, postLink):
     context = browser.new_context()
@@ -80,8 +77,16 @@ def retweet(browser, postLink):
 def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False)
 
-    postTweet(browser)
-    retweet(browser, "https://twitter.com/fortress_fo/status/1440730730730730730")
+    postContent = ""
+
+    if data['article']['linkedin_article_link']:
+        postContent = data['article']['twitter_post'] + '\n\n' + data['article']['linkedin_article_link']
+    else:
+        postContent = data['article']['twitter_post']
+    
+    postTweet(browser, postContent)
+
+    # retweet(browser, "https://twitter.com/fortress_fo/status/1440730730730730730")
 
 with sync_playwright() as playwright:
     run(playwright)
