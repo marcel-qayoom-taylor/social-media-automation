@@ -1,4 +1,6 @@
 postingPlatforms:
+  mailchimp:
+    enabled: false
   linkedIn:
     enabled: false
   squarespace:
