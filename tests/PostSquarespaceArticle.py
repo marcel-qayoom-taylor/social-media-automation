@@ -18,47 +18,63 @@ with open(json_path, 'r') as f:
         raise FileNotFoundError(f"Cannot find the file: {json_path}")
     data = json.load(f)
 
-# def postArticle(page):
-#     # Write article content
+def postArticle(page):
+    page.wait_for_selector("[data-test=\"menuItem-pages\"]")
+    page.locator("[data-test=\"menuItem-pages\"]").click()
+    page.locator('[title="Insights"]').nth(1).click();
+    page.locator("[data-test=\"blog-add-item\"]").click()
+
+    page.get_by_placeholder("Enter a post title…").fill(data['article']['title'])
+    
+    bodyContent = data['article']['body']
+
+    for disclaimer in data['article']['disclaimers']:
+        bodyContent += "\n\n"
+        bodyContent += f"\n{disclaimer}"
+
+    page.get_by_label("Text").get_by_role("paragraph").fill(bodyContent)
 
 def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False)
 
-    print("Could not find existing auth state from squarespaceAuthState.json")
-    squarespaceUsername = os.getenv("SQUARESPACE_USERNAME")
-    squarespacePassword = os.getenv("SQUARESPACE_PASSWORD")
+    # Get the absolute path for the auth state file
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    auth_state_path = os.path.join(current_dir, '..', 'playwright', '.auth', 'squarespaceAuthState.json')
 
-    if not squarespaceUsername or not squarespacePassword:
-        print("Error: Missing Squarespace Credentials! Please ensure both 'instagramUsername' and 'instagramPassword' environment variables are set in your '.env' file.")
-        return
+    try: 
+        # Open Squarespace using saved credentials
+
+        context = browser.new_context(storage_state=auth_state_path)        
+        page = context.new_page()
+        page.goto("https://fortressfamilyoffice.squarespace.com/config/")
+        print("Loaded existing storage state from squarespaceAuthState.json")
+    except FileNotFoundError:
+        print("Could not find existing auth state from squarespaceAuthState.json")
+        squarespaceUsername = os.getenv("SQUARESPACE_USERNAME")
+        squarespacePassword = os.getenv("SQUARESPACE_PASSWORD")
+
+        if not squarespaceUsername or not squarespacePassword:
+            print("Error: Missing Squarespace Credentials! Please ensure both 'instagramUsername' and 'instagramPassword' environment variables are set in your '.env' file.")
+            return
     
-    context = browser.new_context()
-    page = context.new_page()
-    page.goto("https://login.squarespace.com/")
-    page.get_by_placeholder("name@example.com").fill(squarespaceUsername)
-    page.get_by_placeholder("Password").fill(squarespacePassword)
-    page.locator("[data-test=\"login-button\"]").click()
+        context = browser.new_context()
+        page = context.new_page()
+        page.goto("https://login.squarespace.com/")
+        page.get_by_placeholder("name@example.com").fill(squarespaceUsername)
+        page.get_by_placeholder("Password").fill(squarespacePassword)
+        page.locator("[data-test=\"login-button\"]").click()
+        page.get_by_role("link", name="Fortress Family Office").click()
 
-    page.get_by_role("link", name="Fortress Family Office").click()
-    page.wait_for_selector("[data-test=\"menuItem-pages\"]")
-    page.locator("[data-test=\"menuItem-pages\"]").click()
-    # This next step doesn't work as the yui id changes UP TO HERE
-    page.locator("#yui_3_17_2_1_1724891609340_23559").click()
-    page.locator("[data-test=\"blog-add-item\"]").click()
+        # Save storage state for future use
+        context.storage_state(path=auth_state_path)
+        print("Saved storage state to linkedinAuthState.json")
 
-    page.get_by_placeholder("Enter a post title…").fill(data['article']['title'])
-    page.get_by_label("Text").get_by_role("paragraph").fill(data['article']['body'])
 
-    if data['article']['disclaimers']:
-        for disclaimer in data['article']['disclaimers']:
-            page.get_by_label("Text").get_by_role("paragraph").type('\n\n') 
-            page.get_by_label("Text").get_by_role("paragraph").type(disclaimer)
+    postArticle(page)
 
-    page.locator("[data-test=\"dialog-saveAndPublish\"]").click()
+    page.pause()
 
-    context.close()
-    browser.close()
-    playwright.stop()
+
 
 
 

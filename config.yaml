@@ -2,10 +2,10 @@ postingPlatforms:
   facebook:
     enabled: false
   instagram:
-    enabled: false
+    enabled: true
   linkedIn:
-    enabled: false
+    enabled: true
   squarespace:
     enabled: true
   twitter:
-    enabled: false
+    enabled: true

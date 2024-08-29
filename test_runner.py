@@ -12,7 +12,7 @@ enabled_platforms = [platform for platform, settings in config['postingPlatforms
 platform_tests = {
     'mailchimp': 'tests/PostMailchimpArticle.py',
     'linkedIn': 'tests/PostLinkedinArticle.py',
-    'squarespace': 'tests/test_squarespace.py',
+    'squarespace': 'tests/PostSquarespaceArticle.py',
     'medium': 'tests/PostMediumArticle.py',
     'facebook': 'tests/PostFacebookArticle.py',
     'instagram': 'tests/PostInstagramArticle.py',
