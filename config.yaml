@@ -1,11 +1,13 @@
 postingPlatforms:
-  facebook:
-    enabled: false
-  instagram:
-    enabled: true
   linkedIn:
     enabled: false
   squarespace:
+    enabled: true
+  medium:
+    enabled: false
+  facebook:
+    enabled: false
+  instagram:
     enabled: true
   twitter:
     enabled: false
