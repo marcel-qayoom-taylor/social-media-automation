@@ -16,7 +16,6 @@ with open(json_path, 'r') as f:
     if not os.path.exists(json_path):
         raise FileNotFoundError(f"Cannot find the file: {json_path}")
     data = json.load(f)
-    
 
 def format_hashtag(tag: str) -> str:
     return f'#{tag.replace(" ", "").lower()}'

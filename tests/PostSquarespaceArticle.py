@@ -1,4 +1,4 @@
-# step-by-step run command: PWDEBUG=1 pytest -s PostLinkedinArticle.py IN GIT BASH TERMINAL
+# step-by-step run command: PWDEBUG=1 pytest -s PostSquarespaceArticle.py IN GIT BASH TERMINAL
 
 
 import re
@@ -9,55 +9,56 @@ import json
 
 load_dotenv()  # Loads variables from the .env file
 
-
 # Read input data
-with open('../postData.json', 'r') as f:
+current_dir = os.path.dirname(os.path.abspath(__file__))
+json_path = os.path.join(current_dir, '../postData.json')
+
+with open(json_path, 'r') as f:
+    if not os.path.exists(json_path):
+        raise FileNotFoundError(f"Cannot find the file: {json_path}")
     data = json.load(f)
 
 # def postArticle(page):
 #     # Write article content
 
-
 def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False)
 
-    #browser.close()
-    #playwright.stop()
-    # try: 
-    #     context = browser.new_context(storage_state="..\playwright\.auth\mediumAuthState.json")
-        
-    #     # Open linkedin using saved credentials
-    #     page = context.new_page()
-    #     page.goto("https://medium.com/new-story")
-    #     print("Loaded existing storage state from mediumAuthState.json")
-    # except FileNotFoundError: # if no credentials cached
-    #     print("Could not find existing auth state from mediumAuthState.json")
-    #     linkedinUsername = os.getenv("MEDIUM_USERNAME")
-    #     linkedinPassword = os.getenv("MEDIUM_PASSWORD")
-    #     if not linkedinUsername or not linkedinPassword:
-    #         print("Error: Missing Medium Credentials! Please ensure both 'mediumUsername' and 'mediumPassword' environment variables are set in your '.env' file.")
-    #         return
-        
-    #     # Login to LinkedIn
-    #     context = browser.new_context()
-    #     page = context.new_page()
-    #     page.goto("https://medium.com/m/signin")
-    #     page.get_by_label("Sign in with email").press_sequentially(linkedinUsername)
-    #     page.get_by_label("Password", exact=True).press_sequentially(linkedinPassword)
-    #     page.get_by_label("Sign in", exact=True).click()
-        
-    #     # Save storage state for future use
-    #     context.storage_state(path="..\playwright\.auth\linkedinAuthState.json")
-    #     print("Saved storage state to state.json")
+    print("Could not find existing auth state from squarespaceAuthState.json")
+    squarespaceUsername = os.getenv("SQUARESPACE_USERNAME")
+    squarespacePassword = os.getenv("SQUARESPACE_PASSWORD")
 
-    # Post an article
-    # postArticle(page)
+    if not squarespaceUsername or not squarespacePassword:
+        print("Error: Missing Squarespace Credentials! Please ensure both 'instagramUsername' and 'instagramPassword' environment variables are set in your '.env' file.")
+        return
+    
+    context = browser.new_context()
+    page = context.new_page()
+    page.goto("https://login.squarespace.com/")
+    page.get_by_placeholder("name@example.com").fill(squarespaceUsername)
+    page.get_by_placeholder("Password").fill(squarespacePassword)
+    page.locator("[data-test=\"login-button\"]").click()
 
-    # postLink = postArticle(page)
-    # repostOnFortress(page, "https://www.linkedin.com/posts/dion-guagliardo_inflation-interestrates-rba-activity-7204366788891959298-fzs1?utm_source=share&utm_medium=member_desktop")
+    page.get_by_role("link", name="Fortress Family Office").click()
+    page.wait_for_selector("[data-test=\"menuItem-pages\"]")
+    page.locator("[data-test=\"menuItem-pages\"]").click()
+    # This next step doesn't work as the yui id changes UP TO HERE
+    page.locator("#yui_3_17_2_1_1724891609340_23559").click()
+    page.locator("[data-test=\"blog-add-item\"]").click()
 
-    # ---------------------
-    #context.close()
+    page.get_by_placeholder("Enter a post title…").fill(data['article']['title'])
+    page.get_by_label("Text").get_by_role("paragraph").fill(data['article']['body'])
+
+    if data['article']['disclaimers']:
+        for disclaimer in data['article']['disclaimers']:
+            page.get_by_label("Text").get_by_role("paragraph").type('\n\n') 
+            page.get_by_label("Text").get_by_role("paragraph").type(disclaimer)
+
+    page.locator("[data-test=\"dialog-saveAndPublish\"]").click()
+
+    context.close()
+    browser.close()
+    playwright.stop()
 
 
 
