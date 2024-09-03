@@ -1,3 +1,13 @@
+# TO RUN PROGRAM
+
+# 1. Open terminal
+# 2. Run the following command: python main.py
+# 3. Fill in the required fields
+# 4. Click the "Submit" button
+# 5. Run python test_runner.py
+# 6. Check the output of the tests and do manual entry where needed
+
+
 from tkinter import *
 from tkinter import Label
 from tkinter import filedialog

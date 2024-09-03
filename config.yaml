@@ -1,15 +1,11 @@
 postingPlatforms:
-  mailchimp:
+  instagram:
     enabled: false
   linkedIn:
     enabled: false
   squarespace:
-    enabled: true
-  medium:
     enabled: false
-  facebook:
-    enabled: false
-  instagram:
-    enabled: true
   twitter:
     enabled: false
+
+# one issue atm is that the config file structure is being overwritten in the main file
