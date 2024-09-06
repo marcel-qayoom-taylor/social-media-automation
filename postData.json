@@ -1,7 +1,7 @@
 {
   "article": {
-    "title": "",
-    "body": "",
+    "title": "Test title",
+    "body": "This ensures that the preview text is always 150 characters long (147 characters from the article body plus 3 characters for the ellipsis), regardless of the original length of the article body.\nThis ensures that the preview text is always 150 characters long (147 characters from the article body plus 3 characters for the ellipsis), regardless of the original length of the article body.\nThis ensures that the preview text is always 150 characters long (147 characters from the article body plus 3 characters for the ellipsis), regardless of the original length of the article body.\n",
     "intro": "",
     "image_path": "",
     "tags": [
