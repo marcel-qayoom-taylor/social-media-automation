@@ -8,8 +8,8 @@
 # 6. Check the output of the tests and do manual entry where needed
 
 
-from tkinter import *
-from tkinter import Label
+import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
 from tkinter import filedialog
 import json
 
@@ -89,7 +89,7 @@ def submit_data():
         config['postingPlatforms'] = {}
     
     config['postingPlatforms'] = {
-        "mailchimp": {"enabled": postToLinkedIn.get()},
+        "mailchimp": {"enabled": postToMailchimp.get()},
         "linkedIn": {"enabled": postToLinkedIn.get()},
         "facebook": {"enabled": postToFacebook.get()},
         "instagram": {"enabled": postToInstagram.get()},
@@ -135,44 +135,49 @@ def submit_data():
 static_data = load_static_data_from_json()
 
 # Create the main window
-window = Tk()
+window = ttk.Window(themename="superhero")
 window.title("Social Media Poster")
 window.grid_columnconfigure(0, weight=1, minsize=200)
 window.grid_columnconfigure(1, weight=1, minsize=200)
 
+style = ttk.Style()
+style.configure("Heading.TLabel", font=("Verdana", 16, "bold"))
+style.configure("TLabel", font=("Verdana", 10))
+
+
 # Article Frame -------------------------------------------------------------
-frm_article = Frame(window, padx=10, pady=5)
-lbl_article_frame_title = Label(frm_article, text="Article Details", font=font_heading)
+frm_article = ttk.Frame(window, padding=20, borderwidth=1, relief="solid")
+lbl_article_frame_title = ttk.Label(frm_article, text="Article Details", style="Heading.TLabel")
 
 # Title label and entry
-lbl_title = Label(frm_article, text="Enter article title:", font=font_subheading)
-ent_title = Entry(frm_article, width=50)
+lbl_title = ttk.Label(frm_article, text="Enter article title:", style="TLabel")
+ent_title = ttk.Entry(frm_article, width=50, style="TEntry")
 
 # Body label and text box
-lbl_body = Label(frm_article, text="Enter article body:", font=font_subheading)
-txt_body = Text(frm_article, width=70, height=20)
+lbl_body = ttk.Label(frm_article, text="Enter article body:", style="TLabel")
+txt_body = ttk.Text(frm_article, width=70, height=20, wrap="word")
 
 # Body label and text box
-lbl_intro = Label(frm_article, text="Enter article intro:", font=font_subheading)
-txt_intro = Text(frm_article, width=70, height=10)
+lbl_intro = ttk.Label(frm_article, text="Enter article intro:", style="TLabel")
+txt_intro = ttk.Text(frm_article, width=70, height=10, wrap="word")
 
 # Disclaimer checkboxes
-frm_disclaimers = Frame(frm_article, pady=5)
-useGeneralDisclaimer = BooleanVar(value=True)
-useHistoricDisclaimer = BooleanVar(value=False)
-chk_general_disclaimer = Checkbutton(frm_disclaimers, text="Include general disclaimer", onvalue=True, offvalue=False, variable=useGeneralDisclaimer)
-chk_historic_disclaimer = Checkbutton(frm_disclaimers, text="Include historic disclaimer", onvalue=True, offvalue=False, variable=useHistoricDisclaimer)
+frm_disclaimers = ttk.Frame(frm_article, padding=5)
+useGeneralDisclaimer = ttk.BooleanVar(value=True)
+useHistoricDisclaimer = ttk.BooleanVar(value=False)
+chk_general_disclaimer = ttk.Checkbutton(frm_disclaimers, text="Include general disclaimer", onvalue=True, offvalue=False, variable=useGeneralDisclaimer)
+chk_historic_disclaimer = ttk.Checkbutton(frm_disclaimers, text="Include historic disclaimer", onvalue=True, offvalue=False, variable=useHistoricDisclaimer)
 
 # Tags label and entry
-lbl_tags = Label(frm_article, text="Enter tags (seperated by commas):", font=font_subheading)
-txt_tags = Text(frm_article, width=70, height=1)
+lbl_tags = ttk.Label(frm_article, text="Enter tags (seperated by commas):", style="TLabel")
+txt_tags = ttk.Text(frm_article, width=70, height=1, wrap="word")
 
 txt_tags.insert(0.0, ", ".join(static_data['tags'])) # Prefill the text input field
 
 # Add image
-lbl_image = Label(frm_article, text="Add an image", font=font_subheading)
-lbl_image_path = Label(frm_article, text="Image path: ")
-btn_image = Button(frm_article, text="Upload Image", command=imageUploader)
+lbl_image = ttk.Label(frm_article, text="Add an image", style="TLabel")
+lbl_image_path = ttk.Label(frm_article, text="Image path: ")
+btn_image = ttk.Button(frm_article, text="Upload Image", command=imageUploader, style="TButton")
 
 # Positioning
 frm_article.grid(row=0, column=0, padx=10, pady=5, sticky='n')
@@ -185,7 +190,7 @@ lbl_intro.grid(row=5, column=0, sticky='w', pady=5)
 txt_intro.grid(row=6, column=0, sticky='w', pady=5)
 frm_disclaimers.grid(row=7, column=0, sticky='w')
 chk_general_disclaimer.grid(row=0, column=0, sticky='w')
-chk_historic_disclaimer.grid(row=0, column=1, sticky='w')
+chk_historic_disclaimer.grid(row=0, column=1, sticky='w', padx=5)
 lbl_tags.grid(row=8, column=0, sticky='w', pady=5)
 txt_tags.grid(row=9, column=0, sticky='w', pady=5)
 lbl_image.grid(row=10, column=0, sticky='w', pady=5)
@@ -193,37 +198,40 @@ lbl_image_path.grid(row=11, column=0, sticky='w', pady=5)
 btn_image.grid(row=12, column=0, sticky='w', pady=5)
 # End of Article Frame -------------------------------------------------------------
 # Extras Frame ---------------------------------------------------------------------
-frm_extras = Frame(window, padx=10, pady=5)
-lbl_extras_frame_title = Label(frm_extras, text="Extra Details", font=font_heading)
+frm_extras = ttk.Frame(window, padding=20, borderwidth=1, relief="solid")
+lbl_extras_frame_title = ttk.Label(frm_extras, text="Extra Details", style="Heading.TLabel")
 
 # Twitter description
-frm_twitter = Frame(frm_extras, pady=5)
+frm_twitter = ttk.Frame(frm_extras, padding=5)
 
-lbl_twt_desc = Label(frm_twitter, text="Enter Twitter description:", font=font_subheading)
-txt_twt_desc = Text(frm_twitter, width=70, height=6)
+lbl_twt_desc = ttk.Label(frm_twitter, text="Enter Twitter description:", style="TLabel")
+txt_twt_desc = ttk.Text(frm_twitter, width=70, height=6, wrap="word")
 txt_twt_desc.bind("<KeyRelease>", update_char_count)
 
 # Character count label
-lbl_char_count = Label(frm_twitter, text="280 chars remaining", font=font_subheading)
+lbl_char_count = ttk.Label(frm_twitter, text="280 chars remaining", style="TLabel")
 
 # Platforms
-lbl_platforms = Label(frm_extras, text="Post to:", font=font_heading)
+lbl_platforms = ttk.Label(frm_extras, text="Post to:", style="Heading.TLabel")
 
-frm_platforms = Frame(frm_extras, pady=5)
-postToLinkedIn = BooleanVar(value=True)
-postToFacebook = BooleanVar(value=True)
-postToInstagram = BooleanVar(value=True)
-postToSquarespace = BooleanVar(value=True)
-postToTwitter = BooleanVar(value=True)
+frm_platforms = ttk.Frame(frm_extras, padding=5)
+postToLinkedIn = ttk.BooleanVar(value=True)
+postToFacebook = ttk.BooleanVar(value=True)
+postToInstagram = ttk.BooleanVar(value=True)
+postToSquarespace = ttk.BooleanVar(value=True)
+postToTwitter = ttk.BooleanVar(value=True)
+postToMailchimp = ttk.BooleanVar(value=True)  # New variable for Mailchimp
 
-chk_linkedin = Checkbutton(frm_platforms, text="LinkedIn", onvalue=True, offvalue=False, variable=postToLinkedIn)
-chk_facebook = Checkbutton(frm_platforms, text="Facebook", onvalue=True, offvalue=False, variable=postToFacebook)
-chk_instagram = Checkbutton(frm_platforms, text="Instagram", onvalue=True, offvalue=False, variable=postToInstagram)
-chk_squarespace = Checkbutton(frm_platforms, text="Squarespace", onvalue=True, offvalue=False, variable=postToSquarespace)
-chk_twitter = Checkbutton(frm_platforms, text="Twitter", onvalue=True, offvalue=False, variable=postToTwitter)
+chk_mailchimp = ttk.Checkbutton(frm_platforms, text="Mailchimp", onvalue=True, offvalue=False, variable=postToMailchimp)  # New checkbox for Mailchimp
+chk_linkedin = ttk.Checkbutton(frm_platforms, text="LinkedIn", onvalue=True, offvalue=False, variable=postToLinkedIn)
+chk_facebook = ttk.Checkbutton(frm_platforms, text="Facebook", onvalue=True, offvalue=False, variable=postToFacebook)
+chk_instagram = ttk.Checkbutton(frm_platforms, text="Instagram", onvalue=True, offvalue=False, variable=postToInstagram)
+chk_squarespace = ttk.Checkbutton(frm_platforms, text="Squarespace", onvalue=True, offvalue=False, variable=postToSquarespace)
+chk_twitter = ttk.Checkbutton(frm_platforms, text="Twitter", onvalue=True, offvalue=False, variable=postToTwitter)
 
 # Positioning
 frm_extras.grid(row=0, column=1, padx=10, pady=5, sticky='n')
+
 lbl_extras_frame_title.grid(row=0, column=0, sticky='w', pady=5)
 frm_twitter.grid(row=1, column=0, sticky='w', pady=5)
 lbl_twt_desc.grid(row=0, column=0, sticky='w', pady=5)
@@ -232,17 +240,29 @@ lbl_char_count.grid(row=2, column=0, sticky='w', pady=5, padx=5)
 
 lbl_platforms.grid(row=3, column=0, sticky='w', pady=5)
 frm_platforms.grid(row=4, column=0, sticky='w', pady=5)
-chk_linkedin.grid(row=0, column=0, sticky='w', padx=(0,5))
-chk_facebook.grid(row=0, column=1, sticky='w', padx=(0,5))
-chk_instagram.grid(row=0, column=2, sticky='w', padx=(0,5))
-chk_squarespace.grid(row=0, column=3, sticky='w', padx=(0,5))
-chk_twitter.grid(row=0, column=4, sticky='w', padx=(0,5))
+chk_mailchimp.grid(row=0, column=0, sticky='w', padx=(0,5))
+chk_linkedin.grid(row=0, column=1, sticky='w', padx=(0,5))
+chk_facebook.grid(row=0, column=2, sticky='w', padx=(0,5))
+chk_instagram.grid(row=0, column=3, sticky='w', padx=(0,5))
+chk_squarespace.grid(row=0, column=4, sticky='w', padx=(0,5))
+chk_twitter.grid(row=0, column=5, sticky='w', padx=(0,5))
 
 # End of Extras Frame ---------------------------------------------------------------------
 
 # Create the submit button
-btn_submit = Button(window, text="Submit", command=submit_data)
+btn_submit = ttk.Button(window, text="Submit", command=submit_data, style="TButton")
 btn_submit.grid(row=10, column=0, columnspan=2, pady=10)
+
+# Add some padding to the main window
+window.geometry("1100x1000")  # Set a fixed size for the window
+#window["padding"] = (20, 20)  # Add padding to the main window
+
+# Adjust the grid layout
+window.grid_columnconfigure(0, weight=1)
+window.grid_columnconfigure(1, weight=1)
+frm_article.grid(row=0, column=0, padx=20, pady=20, sticky='nsew')
+frm_extras.grid(row=0, column=1, padx=20, pady=20, sticky='nsew')
 
 # Run the main loop
 window.mainloop()
+
