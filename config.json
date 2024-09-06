@@ -1,0 +1,22 @@
+{
+  "postingPlatforms": {
+    "mailchimp": {
+      "enabled": true
+    },
+    "linkedIn": {
+      "enabled": true
+    },
+    "facebook": {
+      "enabled": false
+    },
+    "instagram": {
+      "enabled": true
+    },
+    "squarespace": {
+      "enabled": true
+    },
+    "twitter": {
+      "enabled": true
+    }
+  }
+}

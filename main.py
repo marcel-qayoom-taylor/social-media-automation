@@ -12,7 +12,6 @@ from tkinter import *
 from tkinter import Label
 from tkinter import filedialog
 import json
-import yaml
 
 # Fonts
 font_heading = ("Arial", 13, "bold")
@@ -21,12 +20,17 @@ font_subheading = ("Arial", 10, "bold")
 image_path = ""  # Global variable to store the image path
 static_data = {} # Global variable to store the static data
 
-with open('./config.yaml', 'r') as file:
-    try:
-        config = yaml.safe_load(file)
+try:
+    with open('./config.json', 'r') as file:
+        config = json.load(file)
         print("Config loaded: ", config)
-    except FileNotFoundError:
-        print("config.yaml file not found.")
+except FileNotFoundError:
+    print("config.json file not found.")
+    config = {}  # Initialize an empty config if file doesn't exist
+except json.JSONDecodeError:
+    print("Error decoding JSON from config.json.")
+    config = {}  # Initialize an empty config if there's a JSON decoding error
+
 
 def load_static_data_from_json():
     try:
@@ -69,28 +73,39 @@ def submit_data():
     # Prepare disclaimers list
     disclaimers = []
     if useGeneralDisclaimer.get():
-        disclaimers.append(static_data['general_disclaimer'])  # Replace with your actual general disclaimer text
+        disclaimers.append(static_data['general_disclaimer'])
     if useHistoricDisclaimer.get():
-        disclaimers.append(static_data['historic_disclaimer'])  # Replace with your actual historic disclaimer text
+        disclaimers.append(static_data['historic_disclaimer'])
     
-    config = {
-        "postingPlatforms": {
-            "linkedIn": {"enabled": postToLinkedIn.get()},
-            "facebook": {"enabled": postToFacebook.get()},
-            "instagram": {"enabled": postToInstagram.get()},
-            "squarespace": {"enabled": postToSquarespace.get()},
-            "twitter": {"enabled": postToTwitter.get()}
-        }
+    # Load existing config
+    try:
+        with open("config.json", "r") as f:
+            config = json.load(f)
+    except FileNotFoundError:
+        config = {}
+
+    # Update only the postingPlatforms section
+    if 'postingPlatforms' not in config:
+        config['postingPlatforms'] = {}
+    
+    config['postingPlatforms'] = {
+        "mailchimp": {"enabled": postToLinkedIn.get()},
+        "linkedIn": {"enabled": postToLinkedIn.get()},
+        "facebook": {"enabled": postToFacebook.get()},
+        "instagram": {"enabled": postToInstagram.get()},
+        "squarespace": {"enabled": postToSquarespace.get()},
+        "twitter": {"enabled": postToTwitter.get()}
     }
 
+    # Write updated config back to file
     try:
-        with open("config.yaml", "w") as f:
-            yaml.dump(config, f)
-        print("Config successfully written to config.yaml")
+        with open("config.json", "w") as f:
+            json.dump(config, f, indent=2)
+        print("Config successfully written to config.json")
     except Exception as e:
-        print(f"An error occurred while writing to config.yaml: {e}")
+        print(f"An error occurred while writing to config.json: {e}")
     
-    # Structure the data
+    # Structure the data for postData.json
     data = {
         "article": {
             "title": ent_title.get(),
@@ -106,7 +121,7 @@ def submit_data():
         }
     }    
 
-    # Write the data to a JSON file
+    # Write the data to postData.json
     try:
         with open("postData.json", "w") as json_file:
             json.dump(data, json_file, indent=2)

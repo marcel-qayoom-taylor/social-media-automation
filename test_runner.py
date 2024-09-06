@@ -1,9 +1,16 @@
-import yaml
+import json
 import subprocess
 
-# Read and parse the config.yaml file
-with open('config.yaml', 'r') as file:
-    config = yaml.safe_load(file)
+# Read and parse the config.json file
+try:
+    with open('config.json', 'r') as file:
+        config = json.load(file)
+except FileNotFoundError:
+    print("config.json file not found.")
+    config = {"postingPlatforms": {}}
+except json.JSONDecodeError:
+    print("Error decoding JSON from config.json.")
+    config = {"postingPlatforms": {}}
 
 # Determine which platforms are enabled
 enabled_platforms = [platform for platform, settings in config['postingPlatforms'].items() if settings['enabled']]
@@ -20,7 +27,7 @@ platform_tests = {
 }
 
 # Filter the tests to run based on enabled platforms
-tests_to_run = [platform_tests[platform] for platform in enabled_platforms]
+tests_to_run = [platform_tests[platform] for platform in enabled_platforms if platform in platform_tests]
 
 print("tests to run are: ", tests_to_run)
 
