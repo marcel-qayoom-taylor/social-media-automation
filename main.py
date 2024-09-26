@@ -17,6 +17,8 @@
 # Ensure linkedin_article_link is being saved and used in other platforms
 # Get reposting to work
 # Try get Medium to work
+# Add bold and italics to to disclaimer
+# Automatically set default paragraph spacing for body content in post data
 
 
 
