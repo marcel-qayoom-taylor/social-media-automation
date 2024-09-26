@@ -40,6 +40,10 @@ def postArticle(page):
     page.locator("label").filter(has_text="Send now").click()
     page.get_by_role("button", name="Save").click()
 
+    page.get_by_role("button", name="Edit from").click()
+    page.get_by_label("Email address").fill("dion@fortressfamilyoffice.com")
+    page.get_by_role("button", name="Save").click()
+    
     page.get_by_role("button", name="Edit design").click()
     page.frame_locator("iframe[title=\"Preview\"]").locator("#dataBlockId-5").get_by_role("paragraph").first.click()
     page.frame_locator("iframe[title=\"Preview\"]").locator("#dataBlockId-5").get_by_role("paragraph").first.fill(data['article']['title'] + '\n\n' + data['article']['body'])
