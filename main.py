@@ -4,7 +4,7 @@
 # 2. Run the following command: python main.py
 # 3. Fill in the required fields
 # 4. Click the "Submit" button
-# 5. Run python test_runner.py
+# 5. Run python 'py test_runner.py'
 # 6. Check the output of the tests and do manual entry where needed
 
 # TO-DO
@@ -17,6 +17,7 @@
 # Ensure linkedin_article_link is being saved and used in other platforms
 # Get reposting to work
 # Try get Medium to work
+# FIX MAILCHIMP BY SETTING DION AS SENDER NOT FORTRESS
 
 
 
@@ -24,6 +25,7 @@ import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 from tkinter import filedialog
 import json
+import subprocess
 
 # Fonts
 font_heading = ("Arial", 13, "bold")
@@ -143,6 +145,16 @@ def submit_data():
 
     # Print the data for verification
     print("Submitted data:", json.dumps(data, indent=2))
+
+    # Run the test_runner.py script
+    try:
+        subprocess.run(['py', 'test_runner.py'], check=True)
+        print("test_runner.py executed successfully")
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred while running test_runner.py: {e}")
+    except FileNotFoundError:
+        print("test_runner.py not found. Make sure it's in the same directory as this script.")
+
     
 static_data = load_static_data_from_json()
 
