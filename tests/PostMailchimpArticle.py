@@ -60,33 +60,24 @@ def run(playwright: Playwright) -> None:
     current_dir = os.path.dirname(os.path.abspath(__file__))
     auth_state_path = os.path.join(current_dir, '..', 'playwright', '.auth', 'mailchimpAuthState.json')
 
-    try: 
-        # Open Mailchimp using saved credentials
-        context = browser.new_context(storage_state=auth_state_path)        
-        page = context.new_page()
-        page.goto("https://admin.mailchimp.com/campaigns/")
-        expect(page.get_by_test_id("LeftNavigation").get_by_role("link", name="Create")).to_be_visible()
-        print("Loaded existing storage state from mailchimpAuthState.json")
-    except:
-        print("Could not find existing auth state from mailchimpAuthState.json OR something went wrong")
-        mailchimpUsername = os.getenv("MAILCHIMP_USERNAME")
-        mailchimpPassword = os.getenv("MAILCHIMP_PASSWORD")
+    mailchimpUsername = os.getenv("MAILCHIMP_USERNAME")
+    mailchimpPassword = os.getenv("MAILCHIMP_PASSWORD")
 
-        if not mailchimpUsername or not mailchimpPassword:
-            print("Error: Missing Mailchimp Credentials! Please ensure both 'mailchimpUsername' and 'mailchimpPassword' environment variables are set in your '.env' file.")
-            return
-    
-        context = browser.new_context()
-        page = context.new_page()
-        page.goto("https://login.mailchimp.com/")
-        page.get_by_label("Username or Email").fill(mailchimpUsername)
-        page.get_by_label("Password").fill(mailchimpPassword)
-        page.get_by_role("button", name="Log in").click()
-        page.pause()
+    if not mailchimpUsername or not mailchimpPassword:
+        print("Error: Missing Mailchimp Credentials! Please ensure both 'mailchimpUsername' and 'mailchimpPassword' environment variables are set in your '.env' file.")
+        return
 
-        # Save storage state for future use
-        context.storage_state(path=auth_state_path)
-        print("Saved storage state to mailchimpAuthState.json")
+    context = browser.new_context()
+    page = context.new_page()
+    page.goto("https://login.mailchimp.com/")
+    page.get_by_label("Username or Email").fill(mailchimpUsername)
+    page.get_by_label("Password").fill(mailchimpPassword)
+    page.get_by_role("button", name="Log in").click()
+    page.pause()
+
+    # Save storage state for future use
+    context.storage_state(path=auth_state_path)
+    print("Saved storage state to mailchimpAuthState.json")
 
 
     postArticle(page)
