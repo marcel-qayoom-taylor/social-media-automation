@@ -55,43 +55,34 @@ def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False)
     
     # Get the absolute path for the auth state file
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    auth_state_path = os.path.join(current_dir, '..', 'playwright', '.auth', 'facebookAuthState.json')
+    # current_dir = os.path.dirname(os.path.abspath(__file__))
+    # auth_state_path = os.path.join(current_dir, '..', 'playwright', '.auth', 'facebookAuthState.json')
 
+    print("Could not find existing auth state from facebookAuthState.json")
+    facebookUsername = os.getenv("FACEBOOK_USERNAME")
+    facebookPassword = os.getenv("FACEBOOK_PASSWORD")
 
+    if not facebookUsername or not facebookPassword:
+        print("Error: Missing Facebook Credentials! Please ensure both 'facebookUsername' and 'facebookPassword' environment variables are set in your '.env' file.")
+        return
     
-    try: 
-        # Open Facebook using saved credentials
-        context = browser.new_context(storage_state=auth_state_path)        
-        page = context.new_page()
-        page.goto("https://www.facebook.com/feed/")
-        print("Loaded existing storage state from facebookAuthState.json")
-    except FileNotFoundError:
-        print("Could not find existing auth state from facebookAuthState.json")
-        facebookUsername = os.getenv("FACEBOOK_USERNAME")
-        facebookPassword = os.getenv("FACEBOOK_PASSWORD")
+    # Login to Facebook
+    context = browser.new_context()
+    page = context.new_page()
 
-        if not facebookUsername or not facebookPassword:
-            print("Error: Missing Facebook Credentials! Please ensure both 'facebookUsername' and 'facebookPassword' environment variables are set in your '.env' file.")
-            return
-        
-        # Login to Facebook
-        context = browser.new_context()
-        page = context.new_page()
-
-        page.goto("https://www.facebook.com/people/Dion-Guagliardo/100067720235998/")
-        page.get_by_role("textbox", name="Email address or phone number").fill(facebookUsername)
-        page.locator("#login_popup_cta_form").get_by_role("textbox", name="Password").fill(facebookPassword)
-        page.get_by_label("Accessible login button").click()
-        page.pause()
-        page.get_by_role("button", name="Continue").click()
-        page.get_by_role("button", name="Trust this device").click()
-        page.get_by_role("button", name="Your profile", exact=True).click()
-        page.get_by_label("Switch to Dion Guagliardo").click()
-        
-        # Save storage state for future use
-        context.storage_state(path=auth_state_path)
-        print("Saved storage state to facebookAuthState.json")
+    page.goto("https://www.facebook.com/people/Dion-Guagliardo/100067720235998/")
+    page.get_by_role("textbox", name="Email address or phone number").fill(facebookUsername)
+    page.locator("#login_popup_cta_form").get_by_role("textbox", name="Password").fill(facebookPassword)
+    page.get_by_label("Accessible login button").click()
+    page.pause()
+    page.get_by_role("button", name="Continue").click()
+    page.get_by_role("button", name="Trust this device").click()
+    page.get_by_role("button", name="Your profile", exact=True).click()
+    page.get_by_label("Switch to Dion Guagliardo").click()
+    
+    # # Save storage state for future use
+    # context.storage_state(path=auth_state_path)
+    # print("Saved storage state to facebookAuthState.json")
 
         # Post an article
         postArticle(page)

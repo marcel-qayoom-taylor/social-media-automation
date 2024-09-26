@@ -17,7 +17,6 @@
 # Ensure linkedin_article_link is being saved and used in other platforms
 # Get reposting to work
 # Try get Medium to work
-# FIX MAILCHIMP BY SETTING DION AS SENDER NOT FORTRESS
 
 
 
