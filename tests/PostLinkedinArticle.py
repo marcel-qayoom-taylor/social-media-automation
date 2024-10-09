@@ -46,14 +46,12 @@ def postArticle(page):
     ## Make the first two words bold
     for _ in range(2):
         page.keyboard.press("ControlOrMeta+Shift+ArrowRight")
-    page.get_by_label("Bold off").click()
+    page.keyboard.press("ControlOrMeta+B")
     page.keyboard.press("ArrowRight")
-    page.get_by_label("Bold on").click()
 
     ## Make the remaining text italic
     page.keyboard.press("ControlOrMeta+Shift+ArrowDown")
-    page.get_by_label("Italic off").click()
-    
+    page.keyboard.press("ControlOrMeta+I")
 
     # Add image
     with page.expect_file_chooser() as fc_info:

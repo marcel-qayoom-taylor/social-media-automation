@@ -35,6 +35,23 @@ def postArticle(page):
 
     page.get_by_label("Text").get_by_role("paragraph").fill(bodyContent)
 
+    # Make the first two words bold and the rest italic
+
+    ## Navigate to the end of the article content
+    # page.keyboard.press("ControlOrMeta+End")
+    # page.keyboard.press("ControlOrMeta+ArrowUp")
+    # page.keyboard.press("ArrowDown")
+    # page.keyboard.press("Home")
+    # ## Make the first two words bold
+    # for _ in range(2):
+    #     page.keyboard.press("ControlOrMeta+Shift+ArrowRight")
+    # page.keyboard.press("ControlOrMeta+B")
+    # page.keyboard.press("ArrowRight")
+
+    # ## Make the remaining text italic
+    # page.keyboard.press("ControlOrMeta+Shift+ArrowDown")
+    # page.keyboard.press("ControlOrMeta+I")
+
 def run(playwright: Playwright) -> None:
     browser = playwright.chromium.launch(headless=False)
 
