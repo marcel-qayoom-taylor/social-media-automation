@@ -36,6 +36,25 @@ def postArticle(page):
 
     page.get_by_label("Article editor content").fill(bodyContent)
 
+    # Make the first two words bold and the rest italic
+    
+    ## Navigate to the end of the article content
+    page.keyboard.press("ControlOrMeta+End")
+    page.keyboard.press("ControlOrMeta+ArrowUp")
+    page.keyboard.press("ArrowDown")
+    page.keyboard.press("Home")
+    ## Make the first two words bold
+    for _ in range(2):
+        page.keyboard.press("ControlOrMeta+Shift+ArrowRight")
+    page.get_by_label("Bold off").click()
+    page.keyboard.press("ArrowRight")
+    page.get_by_label("Bold on").click()
+
+    ## Make the remaining text italic
+    page.keyboard.press("ControlOrMeta+Shift+ArrowDown")
+    page.get_by_label("Italic off").click()
+    
+
     # Add image
     with page.expect_file_chooser() as fc_info:
         page.get_by_label("Upload from computer").click()
