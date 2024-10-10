@@ -78,6 +78,9 @@ def postArticle(page):
         return page.url
     else:
         print("Article successfully created. Skipping publish step.")
+        saveArticleURL(data, page.url)
+        page.get_by_label("View post").click()
+        savePostURL(data, page.url)
         return page.url
 
 def repostOnFortress(page, postLink):
@@ -93,6 +96,18 @@ def repostOnFortress(page, postLink):
         page.get_by_role("button", name="Post").click()
     else:
         print("Repost successfully near-complete. Skipping publish step.")
+
+def saveArticleURL(data, articleUrl):
+    # Update the value of 'linkedin_article_link' in the data dictionary
+    data["article"]["linkedin_article_link"] = articleUrl
+
+    # Write the updated data back to the JSON file
+    try:
+        with open("postData.json", "w") as json_file:
+            json.dump(data, json_file, indent=2)
+        print("Data successfully updated and written to postData.json")
+    except Exception as e:
+        print(f"An error occurred while writing to postData.json: {e}")
 
 def savePostURL(data, postUrl):
     # Update the value of 'linkedin_post_link' in the data dictionary
@@ -141,9 +156,8 @@ def run(playwright: Playwright) -> None:
         print("Saved storage state to linkedinAuthState.json")
 
     # Post an article
-    postUrl = postArticle(page)
+    postArticle(page)
     
-    #savePostURL(data, postUrl)
     #repostOnFortress(page, postUrl)
     
 

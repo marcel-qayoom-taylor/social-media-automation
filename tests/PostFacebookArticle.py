@@ -85,7 +85,7 @@ def run(playwright: Playwright) -> None:
     # print("Saved storage state to facebookAuthState.json")
 
         # Post an article
-        postArticle(page)
+    postArticle(page)
     
     #savePostURL(data, postUrl)
     #repostOnFortress(page, postUrl)
