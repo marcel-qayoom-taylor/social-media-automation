@@ -9,8 +9,6 @@
 
 # TO-DO
 
-# Check why facebook didn't run last time
-# Check facebook flow
 # Find a way to announce next human step when hitting page.pause()
 # Find a way to communicate next planned action of the program to the user
 # Add a way to have confirmation of what platforms have been completed

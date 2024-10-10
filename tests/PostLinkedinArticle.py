@@ -78,6 +78,7 @@ def postArticle(page):
         return page.url
     else:
         print("Article successfully created. Skipping publish step.")
+        page.pause()
         saveArticleURL(data, page.url)
         page.get_by_label("View post").click()
         savePostURL(data, page.url)
