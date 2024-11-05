@@ -46,8 +46,11 @@ def postArticle(page):
     page.get_by_role("button", name="Save").click()
 
     page.get_by_role("button", name="Edit design").click()
-    page.frame_locator("iframe[title=\"Preview\"]").locator("#dataBlockId-5").get_by_role("paragraph").first.click()
-    page.frame_locator("iframe[title=\"Preview\"]").locator("#dataBlockId-5").get_by_role("paragraph").first.fill(data['article']['title'] + '\n\n' + data['article']['body'])
+    page.frame_locator("iframe[title=\"Preview\"]").get_by_text("Regards").click()
+    page.frame_locator("iframe[title=\"Preview\"]").get_by_text("RegardsDion Guagliardo |").press("Home")
+    page.frame_locator("iframe[title=\"Preview\"]").get_by_text("RegardsDion Guagliardo |").press("ArrowUp")
+    page.frame_locator("iframe[title=\"Preview\"]").get_by_text("RegardsDion Guagliardo |").press("ArrowUp")
+    page.fill(data['article']['title'] + '\n\n' + data['article']['body'])
     page.frame_locator("iframe[title=\"Preview\"]").locator("#dataBlockId-5").get_by_role("paragraph").first.click(click_count=3)
     page.get_by_role("button", name="Set bold style on text").click()
 

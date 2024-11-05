@@ -97,6 +97,7 @@ def repostOnFortress(page, postLink):
         page.get_by_role("button", name="Post").click()
     else:
         print("Repost successfully near-complete. Skipping publish step.")
+        page.pause()
 
 def saveArticleURL(data, articleUrl):
     # Update the value of 'linkedin_article_link' in the data dictionary
